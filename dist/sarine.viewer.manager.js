@@ -100,7 +100,7 @@
           }));
           break;
         case "light":
-          viewers.push(new Viewer.Dynamic.Light({
+          viewers.push(new Light({
             src: stoneViews[type],
             element: toElement
           }));
