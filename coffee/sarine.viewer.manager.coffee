@@ -68,7 +68,7 @@ class ViewerManger
 					oneSprite : false
 				})
 			when "light"
-				viewers.push new Light({
+				viewers.push new Viewer.Dynamic.Light({
 					src : stoneViews[type]
 					element: toElement
 				})
