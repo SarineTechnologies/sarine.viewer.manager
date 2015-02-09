@@ -2,7 +2,7 @@
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, bindElementToSelector, fromTag, loadTemplate, stoneViews, template, toTag, viewers;
+    var addViewer, bindElementToSelector, fromTag, getPath, jsons, loadTemplate, logicPath, logicRoot, stoneViews, template, toTag, viewers;
 
     viewers = [];
 
@@ -16,10 +16,23 @@
 
     template = void 0;
 
+    jsons = void 0;
+
+    logicRoot = void 0;
+
+    logicPath = void 0;
+
     ViewerManger.prototype.bind = Error;
 
+    getPath = function(src) {
+      var arr;
+      arr = src.split("/");
+      arr.pop();
+      return arr.join("/");
+    };
+
     function ViewerManger(option) {
-      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template;
+      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot, logicPath = option.logicPath;
       viewers = [];
       this.bind = option.template ? loadTemplate : bindElementToSelector;
     }
@@ -48,28 +61,29 @@
       defer = $.Deferred();
       deferArr = [];
       $("<div>").load(template, function(a, b, c) {
-        $(this).find("script").each((function(_this) {
+        $(selector).prepend($(a).each((function(_this) {
           return function(i, v) {
-            if (v.src) {
+            if (v.tagName === "SCRIPT" && v.src) {
               deferArr.push($.Deferred());
-              $.ajax({
-                url: v.src,
-                dataType: "script",
-                async: false,
-                success: function() {
-                  return deferArr.pop().resolve();
+              v.src = v.src.replace(getPath(location.origin + location.pathname), getPath(template));
+              $.getScript(v.src, function() {
+                deferArr.pop();
+                if (deferArr.length === 0) {
+                  return bindElementToSelector(selector).then(function() {
+                    return defer.resolve();
+                  });
                 }
               });
-            } else {
-              $("<script type='text/javascript'></script>").text(v.innerText).appendTo(selector);
+              $(v).remove();
             }
-            return v.remove();
+            if (v.tagName === "LINK" && v.href) {
+              return v.href = v.href.replace(getPath(location.origin + location.pathname), getPath(template));
+            }
           };
-        })(this));
-        $(selector).prepend($(this).children());
-        return $.when.apply($, deferArr).done(function() {
+        })(this)));
+        if (deferArr.length === 0) {
           return bindElementToSelector(selector).then(defer.resolve);
-        });
+        }
       });
       return defer.then(function() {
         return $(document).trigger("loadTemplate");
@@ -77,38 +91,25 @@
     };
 
     addViewer = function(type, toElement) {
-      switch (type) {
-        case "realview":
-          viewers.push(new Viewer.Dynamic.Sprite({
-            src: stoneViews[type],
-            element: toElement,
-            jsonFileName: "/Jsons/iview.json",
-            firstImagePath: "/Images/Eyeview/img0.jpg",
-            spritesPath: "/EyeViewSprites/sprite",
-            oneSprite: true,
-            autoPlay: true
-          }));
-          break;
-        case "topinspection":
-          viewers.push(new Viewer.Dynamic.Sprite({
-            src: stoneViews[type],
-            element: toElement,
-            jsonFileName: "/Jsons/impression.json",
-            firstImagePath: "/Images/Impression/img0.jpg",
-            spritesPath: "/ImpressionSprites/sprite_",
-            oneSprite: false
-          }));
-          break;
-        case "light":
-          viewers.push(new Viewer.Dynamic.Light({
-            src: stoneViews[type],
-            element: toElement
-          }));
-          break;
-        default:
-          console.error(type, 'not define!');
-          return false;
-      }
+      var data, inst;
+      data = void 0;
+      $.ajaxSetup({
+        async: false
+      });
+      $.getJSON(jsons + type + ".json", (function(_this) {
+        return function(d) {
+          return data = d;
+        };
+      })(this));
+      $.getScript(logicRoot + logicPath.replace(/\{name\}/g, data.name));
+      $.ajaxSetup({
+        async: false
+      });
+      inst = eval(data.instance);
+      viewers.push(new inst($.extend({
+        src: stoneViews[type],
+        element: toElement
+      }, data.args)));
       return true;
     };
 
@@ -119,8 +120,11 @@
     ViewerManger.prototype.first_init = function() {
       var defer;
       defer = $.Deferred();
-      $.when.apply($, viewers.map(function(v) {
+      viewers.forEach(function(v) {
         return v.first_init();
+      });
+      $.when(viewers.map(function(v) {
+        return v.first_init_defer;
       })).done(defer.resolve);
       return defer;
     };
@@ -128,8 +132,11 @@
     ViewerManger.prototype.full_init = function() {
       var defer;
       defer = $.Deferred();
-      $.when.apply($, viewers.map(function(v) {
+      viewers.forEach(function(v) {
         return v.full_init();
+      });
+      $.when.apply($, viewers.map(function(v) {
+        return v.full_init_defer;
       })).done(defer.resolve);
       return defer;
     };
