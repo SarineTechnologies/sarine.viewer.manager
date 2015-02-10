@@ -68,6 +68,6 @@ module.exports = function(grunt) {
             }
         }
     })
-    grunt.registerTask('commit', ['prompt','gitadd', 'gitcommit', 'gitpush']);
+    grunt.registerTask('commit', ['prompt:all','gitadd', 'gitcommit', 'gitpush']);
     grunt.registerTask('release-git', ['version:project:patch', 'gitcommit', 'release']);
 };
