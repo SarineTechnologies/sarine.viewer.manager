@@ -55,19 +55,15 @@ module.exports = function(grunt) {
             all: {
                 options: {
                     questions: [{
-                        config: 'gitadd',
+                        config: 'config.message',
                         type: 'input',
                         message: 'comment:\n',
-                        default: 'message',
-                        when: function(answers) {
-                            message = answers
-                            return answers['bump.increment'] === 'custom';
-                        },
+                        default: 'message'
                     }]
                 }
             }
         }
     })
-    grunt.registerTask('commit', ['gitadd', 'gitcommit', 'gitpush']);
+    grunt.registerTask('commit', ['prompt', 'gitadd', 'gitcommit', 'gitpush']);
     grunt.registerTask('release-git', ['version:project:patch', 'gitcommit', 'release']);
 };
