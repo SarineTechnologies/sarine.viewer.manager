@@ -55,7 +55,7 @@ module.exports = function(grunt) {
             all: {
                 options: {
                     questions: [{
-                        config: 'mochacli.options.reporter',
+                        config: 'gitadd',
                         type: 'input',
                         message: 'comment:\n',
                         default: 'message',
@@ -68,6 +68,6 @@ module.exports = function(grunt) {
             }
         }
     })
-    grunt.registerTask('commit', ['prompt:all','gitadd', 'gitcommit', 'gitpush']);
+    grunt.registerTask('commit', ['gitadd', 'gitcommit', 'gitpush']);
     grunt.registerTask('release-git', ['version:project:patch', 'gitcommit', 'release']);
 };
