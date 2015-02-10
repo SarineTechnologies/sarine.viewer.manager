@@ -1,3 +1,4 @@
+/*! sarine.viewer.manager - v0.0.3 -  Tuesday, February 10th, 2015, 1:56:45 PM */
 (function() {
   var ViewerManger;
 
@@ -32,27 +33,33 @@
     };
 
     function ViewerManger(option) {
-      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot, logicPath = option.logicPath;
+      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
+      logicRoot = stoneViews.viewersBaseUrl + "{version}/js/";
+      jsons = stoneViews.viewersBaseUrl + "{version}/jsons/";
       viewers = [];
       this.bind = option.template ? loadTemplate : bindElementToSelector;
     }
 
     bindElementToSelector = function(selector) {
-      var defer;
+      var arrDefer, defer;
       defer = $.Deferred();
+      arrDefer = [];
       $(selector).find(fromTag).each((function(_this) {
         return function(i, v) {
           var toElement, type;
           toElement = $("<" + toTag + ">");
           type = $(v).attr("viewer");
           toElement.data("type", type);
+          toElement.data("version", $(v).attr("version"));
           toElement.addClass("viewer " + type);
           toElement.attr("id", "viewr_" + i);
           $(v).replaceWith(toElement);
-          addViewer(type, toElement);
-          return defer.resolve();
+          return arrDefer.push(addViewer(type, toElement));
         };
       })(this));
+      $.when.apply($, arrDefer).then(function() {
+        return defer.resolve();
+      });
       return defer;
     };
 
@@ -91,26 +98,30 @@
     };
 
     addViewer = function(type, toElement) {
-      var data, inst;
+      var data, defer;
+      defer = $.Deferred();
       data = void 0;
       $.ajaxSetup({
         async: false
       });
-      $.getJSON(jsons + type + ".json", (function(_this) {
+      $.getJSON(jsons.replace("{version}", toElement.data("version") || "v1") + type + ".json", (function(_this) {
         return function(d) {
           return data = d;
         };
       })(this));
-      $.getScript(logicRoot + logicPath.replace(/\{name\}/g, data.name));
       $.ajaxSetup({
-        async: false
+        async: true
       });
-      inst = eval(data.instance);
-      viewers.push(new inst($.extend({
-        src: stoneViews[type],
-        element: toElement
-      }, data.args)));
-      return true;
+      $.getScript(logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js"), function() {
+        var inst;
+        inst = eval(data.instance);
+        viewers.push(new inst($.extend({
+          src: stoneViews.viewers[type],
+          element: toElement
+        }, data.args)));
+        return defer.resolve();
+      });
+      return defer;
     };
 
     ViewerManger.prototype.getViewers = function() {

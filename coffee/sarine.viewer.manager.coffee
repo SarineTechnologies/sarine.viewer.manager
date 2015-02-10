@@ -15,23 +15,27 @@ class ViewerManger
 		arr.join("/")
 
 	constructor: (option) ->
-		{fromTag, toTag, stoneViews,template,jsons,logicRoot,logicPath} = option
+		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
+		logicRoot = stoneViews.viewersBaseUrl + "{version}/js/"
+		jsons = stoneViews.viewersBaseUrl + "{version}/jsons/"
 		viewers = []
 		@bind = if option.template then loadTemplate else bindElementToSelector
-	bindElementToSelector = (selector)->
+	bindElementToSelector = (selector)-> 
 		defer = $.Deferred()
+		arrDefer = []
 		$(selector).find(fromTag).each((i, v) =>
 			toElement = $ "<#{toTag}>"
 			type = $(v).attr("viewer") ;
 			toElement.data("type", type)
+			toElement.data("version", $(v).attr("version"))
 			toElement.addClass("viewer " + type)
 			toElement.attr("id","viewr_#{i}")
 			$(v).replaceWith(toElement)
-			addViewer(type,toElement)
-			defer.resolve()
+			arrDefer.push addViewer(type,toElement)
 		)
+		$.when.apply($,arrDefer).then(()->defer.resolve())
 		defer
-	loadTemplate = (selector) ->
+	loadTemplate = (selector) -> 
 		defer = $.Deferred()
 		deferArr = []
 		$("<div>").load(template,(a,b,c)-> 
@@ -54,47 +58,22 @@ class ViewerManger
 		defer.then ()-> $(document).trigger("loadTemplate")
 
 	addViewer = (type,toElement)->
+		defer = $.Deferred()
 		data = undefined
 		$.ajaxSetup(
 			async : false
 		);
-		$.getJSON jsons+type + ".json",(d)=>
+		$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json",(d)=>
 			data = d;
-		$.getScript logicRoot + logicPath.replace(/\{name\}/g, data.name)
 		$.ajaxSetup(
-			async : false
+			async : true
 		);
-		inst = eval(data.instance)
-		viewers.push new inst $.extend({src : stoneViews[type],element: toElement},data.args)
-		# switch type
-		# 	when "realview"
-		# 		viewers.push new Viewer.Dynamic.Sprite({
-		# 			src : stoneViews[type]
-		# 			element: toElement
-		# 			jsonFileName : "/Jsons/iview.json"
-		# 			firstImagePath : "/Images/Eyeview/img0.jpg"
-		# 			spritesPath : "/EyeViewSprites/sprite"
-		# 			oneSprite : true
-		# 			autoPlay : true
-		# 		})
-		# 	when "topinspection"
-		# 		viewers.push new Viewer.Dynamic.Sprite({
-		# 			src : stoneViews[type]
-		# 			element: toElement
-		# 			jsonFileName : "/Jsons/impression.json"
-		# 			firstImagePath : "/Images/Impression/img0.jpg"
-		# 			spritesPath : "/ImpressionSprites/sprite_"
-		# 			oneSprite : false
-		# 		})
-		# 	when "light"
-		# 		viewers.push new Viewer.Dynamic.Light({
-		# 			src : stoneViews[type]
-		# 			element: toElement
-		# 		})
-		# 	else
-		# 		console.error type , 'not define!'
-		# 		return false
-		true
+		$.getScript(logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (if location.hash.indexOf("debug") == 1 then ".bundle.js" else ".bundle.min.js"),()->
+			inst = eval(data.instance)
+			viewers.push new inst $.extend({src : stoneViews.viewers[type],element: toElement},data.args)
+			defer.resolve()
+		)
+		defer
 
 	getViewers : ()-> viewers
 
