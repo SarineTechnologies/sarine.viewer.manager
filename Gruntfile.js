@@ -13,7 +13,7 @@ module.exports = function(grunt) {
         gitcommit: {
             all: {
                 options: {
-                    message: message,
+                    message: "<%= config.message %>",
                     force: true
                 },
                 files: {
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                         config: 'config.message',
                         type: 'input',
                         message: 'comment:\n',
-                        default: 'message'
+                        default: 'commit'
                     }]
                 }
             }
