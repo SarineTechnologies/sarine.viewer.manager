@@ -4,9 +4,7 @@
     "main": "dist/sarine.viewer.manager.js",
     "ignore": [
         ".git",
-        "node_modules",
-        "package.json",
-        "Gruntfile.js"
+        "node_modules"
     ],
     "exportsOverride": {
         "sarine.*": {
