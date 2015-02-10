@@ -1,7 +1,8 @@
 'use strict';
 module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt)
-    var files = ["Gruntfile.js", "package.json", "dist/*.js", "coffee/*.coffee", "bower.json","release.cmd","commit.cmd"]
+    var files = ["Gruntfile.js", "package.json", "dist/*.js", "coffee/*.coffee", "bower.json", "release.cmd", "commit.cmd"]
+    var message = "commit"
     grunt.initConfig({
         config: grunt.file.readJSON("bower.json"),
         version: {
@@ -12,6 +13,7 @@ module.exports = function(grunt) {
         gitcommit: {
             all: {
                 options: {
+                    message: message,
                     force: true
                 },
                 files: {
@@ -48,8 +50,24 @@ module.exports = function(grunt) {
                     src: files
                 }
             }
+        },
+        prompt: {
+            all: {
+                options: {
+                    questions: [{
+                        config: 'mochacli.options.reporter',
+                        type: 'input',
+                        message: 'comment:\n',
+                        default: 'message',
+                        when: function(answers) {
+                            message = answers
+                            return answers['bump.increment'] === 'custom';
+                        },
+                    }]
+                }
+            }
         }
     })
-    grunt.registerTask('commit', ['gitadd', 'gitcommit', 'gitpush']);
+    grunt.registerTask('commit', ['prompt','gitadd', 'gitcommit', 'gitpush']);
     grunt.registerTask('release-git', ['version:project:patch', 'gitcommit', 'release']);
 };
