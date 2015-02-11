@@ -107,3 +107,5 @@ class ViewerManger
 	play : ()->
 		viewers.forEach((v)-> v.play(true))
 @ViewerManger = ViewerManger
+
+

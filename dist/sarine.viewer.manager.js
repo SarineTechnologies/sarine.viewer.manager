@@ -1,4 +1,4 @@
-/*! sarine.viewer.manager - v0.0.3 -  Tuesday, February 10th, 2015, 1:56:45 PM */
+/*! sarine.viewer.manager - v0.0.4 -  Wednesday, February 11th, 2015, 12:30:08 PM */
 (function() {
   var ViewerManger;
 
@@ -98,7 +98,7 @@
     };
 
     addViewer = function(type, toElement) {
-      var data, defer;
+      var data, defer, path, s, src, url;
       defer = $.Deferred();
       data = void 0;
       $.ajaxSetup({
@@ -112,7 +112,21 @@
       $.ajaxSetup({
         async: true
       });
-      $.getScript(logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js"), function() {
+      if (stoneViews.viewers[type] === null) {
+        src = (data.callbackPic || logicRoot.replace("{version}", toElement.data("version") || "v1") + "no_stone.png").split("/");
+        path = src.pop();
+        stoneViews.viewers[type] = src.join("/") + "/";
+        data.instance = "SarineImage";
+        data.name = "sarine.viewer.image";
+        data.args = {
+          "imagesArr": [path]
+        };
+      }
+      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js");
+      s = $("<script>", {
+        type: "text/javascript"
+      }).appendTo("body").end()[0];
+      s.onload = function() {
         var inst;
         inst = eval(data.instance);
         viewers.push(new inst($.extend({
@@ -120,7 +134,8 @@
           element: toElement
         }, data.args)));
         return defer.resolve();
-      });
+      };
+      s.src = url;
       return defer;
     };
 
