@@ -96,11 +96,9 @@ class ViewerManger
 		defer = $.Deferred()
 		viewers.forEach (v)-> 
 			pmId = v.id + "_" + v.element.data('type')			
-			performanceManager.Measure(pmId + "_first_init")	
-			performanceManager.Mark(pmId + "_first_init_start")
+			$(document).trigger("first_init_start",[{Id : pmId}])	
 			v.first_init().then((v)-> 				
-				performanceManager.Mark(pmId + "_first_init_end")				
-				performanceManager.CalcAndWriteToLog(pmId + "_first_init")
+				$(document).trigger("first_init_end",[{Id : pmId}])	
 			)
 		$.when(viewers.map((v)-> v.first_init_defer)).done(defer.resolve)
 		defer
@@ -108,11 +106,9 @@ class ViewerManger
 		defer = $.Deferred()
 		viewers.forEach (v)->
 			pmId = v.id + "_" + v.element.data('type')			
-			performanceManager.Measure(pmId + "_full_init")	
-			performanceManager.Mark(pmId + "_full_init_start")
+			$(document).trigger("full_init_start",[{Id : pmId}])
 			v.full_init().then((v)-> 
-				performanceManager.Mark(pmId + "_full_init_end")				
-				performanceManager.CalcAndWriteToLog(pmId + "_full_init")
+				$(document).trigger("full_init_end",[{Id : pmId}])
 			)
 		$.when.apply($,viewers.map((v)-> v.full_init_defer)).done(defer.resolve)
 		defer
