@@ -1,4 +1,9 @@
-/*! sarine.viewer.manager - v0.0.4 -  Wednesday, February 11th, 2015, 12:30:08 PM */
+
+/*!
+sarine.viewer.manager - v0.0.6 -  Thursday, February 12th, 2015, 4:36:21 PM 
+ The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
+ */
+
 (function() {
   var ViewerManger;
 
@@ -147,7 +152,20 @@
       var defer;
       defer = $.Deferred();
       viewers.forEach(function(v) {
-        return v.first_init();
+        var pmId;
+        pmId = v.id + "_" + v.element.data('type');
+        $(document).trigger("first_init_start", [
+          {
+            Id: pmId
+          }
+        ]);
+        return v.first_init().then(function(v) {
+          return $(document).trigger("first_init_end", [
+            {
+              Id: pmId
+            }
+          ]);
+        });
       });
       $.when(viewers.map(function(v) {
         return v.first_init_defer;
@@ -159,7 +177,20 @@
       var defer;
       defer = $.Deferred();
       viewers.forEach(function(v) {
-        return v.full_init();
+        var pmId;
+        pmId = v.id + "_" + v.element.data('type');
+        $(document).trigger("full_init_start", [
+          {
+            Id: pmId
+          }
+        ]);
+        return v.full_init().then(function(v) {
+          return $(document).trigger("full_init_end", [
+            {
+              Id: pmId
+            }
+          ]);
+        });
       });
       $.when.apply($, viewers.map(function(v) {
         return v.full_init_defer;

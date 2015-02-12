@@ -1,3 +1,8 @@
+###!
+sarine.viewer.manager - v0.0.6 -  Thursday, February 12th, 2015, 4:36:21 PM 
+ The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
+###
+
 class ViewerManger
 	viewers  = []
 	stoneViews = undefined
@@ -94,12 +99,22 @@ class ViewerManger
 
 	first_init : ()->
 		defer = $.Deferred()
-		viewers.forEach (v)-> v.first_init()
+		viewers.forEach (v)-> 
+			pmId = v.id + "_" + v.element.data('type')			
+			$(document).trigger("first_init_start",[{Id : pmId}])	
+			v.first_init().then((v)-> 				
+				$(document).trigger("first_init_end",[{Id : pmId}])	
+			)
 		$.when(viewers.map((v)-> v.first_init_defer)).done(defer.resolve)
 		defer
 	full_init : ()->
 		defer = $.Deferred()
-		viewers.forEach (v)-> v.full_init()
+		viewers.forEach (v)->
+			pmId = v.id + "_" + v.element.data('type')			
+			$(document).trigger("full_init_start",[{Id : pmId}])
+			v.full_init().then((v)-> 
+				$(document).trigger("full_init_end",[{Id : pmId}])
+			)
 		$.when.apply($,viewers.map((v)-> v.full_init_defer)).done(defer.resolve)
 		defer
 	stop : ()->
