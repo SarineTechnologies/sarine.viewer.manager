@@ -31,8 +31,7 @@ class ViewerManger
 		$(selector).find(fromTag).each((i, v) =>
 			toElement = $ "<#{toTag}>"
 			type = $(v).attr("viewer") ;
-			toElement.data("type", type)
-			toElement.data("version", $(v).attr("version"))
+			toElement.data({"type": $(v).attr("viewer"), "order": $(v).data('order'), "version": $(v).attr("version")}) 
 			toElement.addClass("viewer " + type)
 			toElement.attr("id","viewr_#{i}")
 			$(v).replaceWith(toElement)
