@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.0.8 -  Monday, February 16th, 2015, 8:36:42 AM 
+sarine.viewer.manager - v0.0.8 -  Monday, February 16th, 2015, 4:02:19 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -51,16 +51,20 @@ sarine.viewer.manager - v0.0.8 -  Monday, February 16th, 2015, 8:36:42 AM
       arrDefer = [];
       $(selector).find(fromTag).each((function(_this) {
         return function(i, v) {
-          var toElement, type;
+          var order, toElement, type;
           toElement = $("<" + toTag + ">");
           type = $(v).attr("viewer");
+          order = $(v).attr('order') || 99;
           toElement.data({
             "type": $(v).attr("viewer"),
-            "order": $(v).data('order'),
+            "order": order,
             "version": $(v).attr("version")
           });
           toElement.addClass("viewer " + type);
-          toElement.attr("id", "viewr_" + i);
+          toElement.attr({
+            "id": "viewr_" + i,
+            "order": order
+          });
           $(v).replaceWith(toElement);
           return arrDefer.push(addViewer(type, toElement));
         };
@@ -151,53 +155,85 @@ sarine.viewer.manager - v0.0.8 -  Monday, February 16th, 2015, 8:36:42 AM
       return viewers;
     };
 
-    ViewerManger.prototype.first_init = function() {
-      var defer;
+    ViewerManger.prototype.sortByOrder = function(viewersArr) {
+      var obj;
+      obj = [];
+      viewersArr.forEach(function(v) {
+        var order;
+        order = v.element.data('order');
+        if (obj[order] === void 0) {
+          obj[order] = [];
+        }
+        return obj[order].push(v);
+      });
+      return obj.filter(function(v) {
+        return v;
+      });
+    };
+
+    ViewerManger.prototype.first_init_viewer = function(v) {
+      var defer, pmId;
       defer = $.Deferred();
-      viewers.forEach(function(v) {
-        var pmId;
-        pmId = v.id + "_" + v.element.data('type');
-        $(document).trigger("first_init_start", [
+      pmId = v.id + "_" + v.element.data('type');
+      $(document).trigger("first_init_start", [
+        {
+          Id: pmId
+        }
+      ]);
+      v.first_init().then(function(v) {
+        $(document).trigger("first_init_end", [
           {
             Id: pmId
           }
         ]);
-        return v.first_init().then(function(v) {
-          return $(document).trigger("first_init_end", [
-            {
-              Id: pmId
-            }
-          ]);
-        });
+        return defer.resolve();
       });
-      $.when(viewers.map(function(v) {
-        return v.first_init_defer;
-      })).done(defer.resolve);
+      return defer;
+    };
+
+    ViewerManger.prototype.init_list = function(list, method, defer) {
+      var arr, current, pmId, v, _list, _method, _t;
+      _t = this;
+      _list = list;
+      _method = method;
+      defer = defer || $.Deferred();
+      current = list.shift();
+      arr = [];
+      for (v in current) {
+        pmId = current[v].id + "_" + current[v].element.data('type');
+        $(document).trigger(_method + "start", [
+          {
+            Id: pmId
+          }
+        ]);
+        arr.push(current[v][_method]());
+        $(document).trigger(_method + "end", [
+          {
+            Id: pmId
+          }
+        ]);
+      }
+      $.when.apply($, arr).then(function() {
+        if (_list.length === 0) {
+          return defer.resolve();
+        } else {
+          return _t.init_list(_list, _method, defer);
+        }
+      });
+      return defer;
+    };
+
+    ViewerManger.prototype.first_init = function() {
+      var defer;
+      defer = $.Deferred();
+      this.init_list(this.sortByOrder(viewers), "first_init").then(defer.resolve);
       return defer;
     };
 
     ViewerManger.prototype.full_init = function() {
       var defer;
       defer = $.Deferred();
-      viewers.forEach(function(v) {
-        var pmId;
-        pmId = v.id + "_" + v.element.data('type');
-        $(document).trigger("full_init_start", [
-          {
-            Id: pmId
-          }
-        ]);
-        return v.full_init().then(function(v) {
-          return $(document).trigger("full_init_end", [
-            {
-              Id: pmId
-            }
-          ]);
-        });
-      });
-      $.when.apply($, viewers.map(function(v) {
-        return v.full_init_defer;
-      })).done(defer.resolve);
+      this.init_list(this.sortByOrder(viewers), "full_init").then(defer.resolve);
       return defer;
     };
 

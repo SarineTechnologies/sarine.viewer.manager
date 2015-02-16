@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.8 -  Monday, February 16th, 2015, 8:36:42 AM 
+sarine.viewer.manager - v0.0.8 -  Monday, February 16th, 2015, 4:02:19 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 class ViewerManger
@@ -30,9 +30,10 @@ class ViewerManger
 		$(selector).find(fromTag).each((i, v) =>
 			toElement = $ "<#{toTag}>"
 			type = $(v).attr("viewer")
-			toElement.data({"type": $(v).attr("viewer"), "order": $(v).data('order'), "version": $(v).attr("version")})   
+			order = $(v).attr('order') || 99
+			toElement.data({"type": $(v).attr("viewer"), "order": order, "version": $(v).attr("version")})   
 			toElement.addClass("viewer " + type)
-			toElement.attr("id","viewr_#{i}")
+			toElement.attr({"id" : "viewr_#{i}", "order" : order})
 			$(v).replaceWith(toElement)
 			arrDefer.push addViewer(type,toElement)
 		)
@@ -95,25 +96,60 @@ class ViewerManger
 
 	getViewers : ()-> viewers
 
-	first_init : ()->
+	sortByOrder : (viewersArr) ->		
+		obj = []
+		viewersArr.forEach (v) ->			
+			order = v.element.data('order')
+			if obj[order] == undefined
+				obj[order] = [] 
+			obj[order].push(v)
+		obj.filter((v)-> return v)
+
+	first_init_viewer : (v) ->
 		defer = $.Deferred()
-		viewers.forEach (v)-> 
-			pmId = v.id + "_" + v.element.data('type')			
-			$(document).trigger("first_init_start",[{Id : pmId}])	
-			v.first_init().then((v)-> 				
-				$(document).trigger("first_init_end",[{Id : pmId}])	
-			)
-		$.when(viewers.map((v)-> v.first_init_defer)).done(defer.resolve)
+		pmId = v.id + "_" + v.element.data('type')	 		
+		$(document).trigger("first_init_start",[{Id : pmId}])						
+		v.first_init().then((v)-> 						
+			$(document).trigger("first_init_end",[{Id : pmId}])				
+			defer.resolve();
+		)
 		defer
+
+	init_list : (list,method,defer) ->		
+		_t = @
+		_list = list
+		_method = method
+		defer = defer || $.Deferred() 
+		current = list.shift()
+		arr = []
+		for v of current 
+			pmId = current[v].id + "_" + current[v].element.data('type')
+			$(document).trigger(_method + "start",[{Id : pmId}])				
+			arr.push current[v][_method]()
+			$(document).trigger(_method + "end",[{Id : pmId}]) 
+		$.when.apply($,arr).then(()->
+			if _list.length == 0
+				defer.resolve();  
+			else
+				_t.init_list(_list,_method,defer)
+		)				
+		defer
+		
+	first_init : ()-> 
+		defer = $.Deferred()		 
+		@init_list(@sortByOrder(viewers),"first_init").then(defer.resolve)
+		defer
+
 	full_init : ()->
 		defer = $.Deferred()
-		viewers.forEach (v)->
-			pmId = v.id + "_" + v.element.data('type')			
-			$(document).trigger("full_init_start",[{Id : pmId}])
-			v.full_init().then((v)-> 
-				$(document).trigger("full_init_end",[{Id : pmId}])
-			)
-		$.when.apply($,viewers.map((v)-> v.full_init_defer)).done(defer.resolve)
+		@init_list(@sortByOrder(viewers),"full_init").then(defer.resolve)
+		# viewers.forEach (v)->
+		# 	pmId = v.id + "_" + v.element.data('type')			
+		# 	$(document).trigger("full_init_start",[{Id : pmId}])
+		# 	v.full_init().then((v)-> 
+		# 		$(document).trigger("full_init_end",[{Id : pmId}])
+		# 	)
+		# $.when.apply($,viewers.map((v)-> v.full_init_defer)).done(defer.resolve)
 		defer
 	stop : ()->
 		viewers.forEach((v)-> v.stop())
