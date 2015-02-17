@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.0.9 -  Monday, February 16th, 2015, 6:15:27 PM 
+sarine.viewer.manager - v0.0.10 -  Tuesday, February 17th, 2015, 4:12:58 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -8,7 +8,7 @@ sarine.viewer.manager - v0.0.9 -  Monday, February 16th, 2015, 6:15:27 PM
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, bindElementToSelector, fromTag, getPath, jsons, loadTemplate, logicPath, logicRoot, stoneViews, template, toTag, viewers;
+    var addViewer, bindElementToSelector, findAttribute, fromTag, getPath, jsons, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
 
     viewers = [];
 
@@ -46,9 +46,10 @@ sarine.viewer.manager - v0.0.9 -  Monday, February 16th, 2015, 6:15:27 PM
     }
 
     bindElementToSelector = function(selector) {
-      var arrDefer, defer;
+      var arrDefer, defer, _t;
       defer = $.Deferred();
       arrDefer = [];
+      _t = this;
       $(selector).find(fromTag).each((function(_this) {
         return function(i, v) {
           var order, toElement, type;
@@ -69,10 +70,31 @@ sarine.viewer.manager - v0.0.9 -  Monday, February 16th, 2015, 6:15:27 PM
           return arrDefer.push(addViewer(type, toElement));
         };
       })(this));
+      $(selector).find('*[data-sarine-info]').each((function(_this) {
+        return function(i, v) {
+          var $el;
+          $el = $(v);
+          return $el.text(findAttribute(stones[0], $el.data('sarineInfo')));
+        };
+      })(this));
       $.when.apply($, arrDefer).then(function() {
         return defer.resolve();
       });
       return defer;
+    };
+
+    recurse = function(o, props) {
+      if (props.length === 0) {
+        return o;
+      }
+      if (!o) {
+        return void 0;
+      }
+      return recurse(o[props.shift()], props);
+    };
+
+    findAttribute = function(obj, ns) {
+      return recurse(obj, ns.split('.'));
     };
 
     loadTemplate = function(selector) {

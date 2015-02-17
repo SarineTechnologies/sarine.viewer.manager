@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.9 -  Monday, February 16th, 2015, 6:15:27 PM 
+sarine.viewer.manager - v0.0.10 -  Tuesday, February 17th, 2015, 4:12:59 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 class ViewerManger
@@ -27,6 +27,7 @@ class ViewerManger
 	bindElementToSelector = (selector)-> 
 		defer = $.Deferred()
 		arrDefer = []
+		_t = @
 		$(selector).find(fromTag).each((i, v) =>
 			toElement = $ "<#{toTag}>"
 			type = $(v).attr("viewer")
@@ -37,8 +38,23 @@ class ViewerManger
 			$(v).replaceWith(toElement)
 			arrDefer.push addViewer(type,toElement)
 		)
+		$(selector).find('*[data-sarine-info]').each( (i,v) => 
+			$el = $(v)
+			$el.text findAttribute(stones[0], $el.data('sarineInfo'))					
+		) 
 		$.when.apply($,arrDefer).then(()->defer.resolve())
 		defer
+
+	recurse = (o, props) ->
+		if props.length == 0
+			return o
+		if !o
+			return undefined
+		return recurse(o[props.shift()], props)
+
+	findAttribute = (obj, ns) ->
+		return recurse(obj, ns.split('.'))
+
 	loadTemplate = (selector) -> 
 		defer = $.Deferred()
 		deferArr = []
@@ -60,6 +76,8 @@ class ViewerManger
 				bindElementToSelector(selector).then(defer.resolve)
 		)
 		defer.then ()-> $(document).trigger("loadTemplate")
+
+	
 
 	addViewer = (type,toElement)->
 		defer = $.Deferred()
