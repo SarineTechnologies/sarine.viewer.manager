@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.10 -  Tuesday, February 17th, 2015, 4:12:58 PM 
+sarine.viewer.manager - v0.0.11 -  Wednesday, February 18th, 2015, 3:17:38 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 
@@ -92,8 +92,8 @@ class ViewerManger
 			async : true
 		); 
 		if stoneViews.viewers[type] == null
-			src = (data.callbackPic || logicRoot.replace("{version}", toElement.data("version") || "v1") + "no_stone.png").split("/")
-			path = src.pop();
+			src = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png").split("/")
+			path = src.pop(); 
 			stoneViews.viewers[type] =src.join("/") + "/"
 			data.instance = "SarineImage"
 			data.name = "sarine.viewer.image"
