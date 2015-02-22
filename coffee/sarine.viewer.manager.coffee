@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.12 -  Thursday, February 19th, 2015, 1:53:28 PM 
+sarine.viewer.manager - v0.0.14 -  Sunday, February 22nd, 2015, 12:26:08 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 class ViewerManger
@@ -20,10 +20,9 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
-		logicRoot = stoneViews.viewersBaseUrl + "{version}/js/"
-		jsons = stoneViews.viewersBaseUrl + "{version}/jsons/"
-		viewers = []
-		console.log "hello1"
+		logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/"
+		jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/"
+		viewers = []		
 		@bind = if option.template then loadTemplate else bindElementToSelector
 	bindElementToSelector = (selector)-> 
 		defer = $.Deferred()
