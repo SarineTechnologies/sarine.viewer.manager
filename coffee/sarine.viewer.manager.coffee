@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.14 -  Sunday, February 22nd, 2015, 12:26:08 PM 
+sarine.viewer.manager - v0.0.15 -  Monday, February 23rd, 2015, 1:13:12 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 class ViewerManger
@@ -82,6 +82,7 @@ class ViewerManger
 	addViewer = (type,toElement)->
 		defer = $.Deferred()
 		data = undefined
+		callbackPic = undefined
 		$.ajaxSetup(
 			async : false
 		);
@@ -90,8 +91,9 @@ class ViewerManger
 		$.ajaxSetup(
 			async : true
 		); 
+		callbackPic = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png")
 		if stoneViews.viewers[type] == null
-			src = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png").split("/")
+			src = callbackPic.split("/")
 			path = src.pop(); 
 			stoneViews.viewers[type] =src.join("/") + "/"
 			data.instance = "SarineImage"
@@ -106,7 +108,7 @@ class ViewerManger
 		s = $("<script>",{type:"text/javascript"}).appendTo("body").end()[0]
 		s.onload = ()->
 			inst = eval(data.instance)
-			viewers.push new inst $.extend({src : stoneViews.viewers[type],element: toElement},data.args)
+			viewers.push new inst $.extend({src : stoneViews.viewers[type],element: toElement,callbackPic : callbackPic},data.args)
 			defer.resolve()
 		s.src = url
 

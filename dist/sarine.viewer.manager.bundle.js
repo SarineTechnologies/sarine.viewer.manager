@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.0.14 -  Sunday, February 22nd, 2015, 12:26:08 PM 
+sarine.viewer.manager - v0.0.15 -  Monday, February 23rd, 2015, 1:13:12 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -42,7 +42,6 @@ sarine.viewer.manager - v0.0.14 -  Sunday, February 22nd, 2015, 12:26:08 PM
       logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/";
       jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/";
       viewers = [];
-      console.log("hello1");
       this.bind = option.template ? loadTemplate : bindElementToSelector;
     }
 
@@ -133,9 +132,10 @@ sarine.viewer.manager - v0.0.14 -  Sunday, February 22nd, 2015, 12:26:08 PM
     };
 
     addViewer = function(type, toElement) {
-      var data, defer, path, s, src, url;
+      var callbackPic, data, defer, path, s, src, url;
       defer = $.Deferred();
       data = void 0;
+      callbackPic = void 0;
       $.ajaxSetup({
         async: false
       });
@@ -147,8 +147,9 @@ sarine.viewer.manager - v0.0.14 -  Sunday, February 22nd, 2015, 12:26:08 PM
       $.ajaxSetup({
         async: true
       });
+      callbackPic = data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png";
       if (stoneViews.viewers[type] === null) {
-        src = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png").split("/");
+        src = callbackPic.split("/");
         path = src.pop();
         stoneViews.viewers[type] = src.join("/") + "/";
         data.instance = "SarineImage";
@@ -166,7 +167,8 @@ sarine.viewer.manager - v0.0.14 -  Sunday, February 22nd, 2015, 12:26:08 PM
         inst = eval(data.instance);
         viewers.push(new inst($.extend({
           src: stoneViews.viewers[type],
-          element: toElement
+          element: toElement,
+          callbackPic: callbackPic
         }, data.args)));
         return defer.resolve();
       };
