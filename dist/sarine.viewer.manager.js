@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.0.15 -  Monday, February 23rd, 2015, 1:13:12 PM 
+sarine.viewer.manager - v0.0.16 -  Tuesday, February 24th, 2015, 11:00:43 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -98,28 +98,36 @@ sarine.viewer.manager - v0.0.15 -  Monday, February 23rd, 2015, 1:13:12 PM
     };
 
     loadTemplate = function(selector) {
-      var defer, deferArr;
+      var defer, deferArr, scripts;
       defer = $.Deferred();
       deferArr = [];
+      scripts = [];
       $("<div>").load(template, function(a, b, c) {
-        $(selector).prepend($(a).each((function(_this) {
+        $(selector).prepend($(a).filter((function(_this) {
           return function(i, v) {
-            if (v.tagName === "SCRIPT" && v.src) {
-              deferArr.push($.Deferred());
-              v.src = v.src.replace(getPath(location.origin + location.pathname), getPath(template));
-              $.getScript(v.src, function() {
-                deferArr.pop();
-                if (deferArr.length === 0) {
-                  return bindElementToSelector(selector).then(function() {
-                    return defer.resolve();
-                  });
-                }
-              });
+            if (v.tagName === "SCRIPT") {
+              if (v.src) {
+                deferArr.push($.Deferred());
+                v.src = v.src.replace(getPath(location.origin + location.pathname), getPath(template));
+                $.getScript(v.src, function() {
+                  deferArr.pop();
+                  if (deferArr.length === 0) {
+                    $(selector).append(scripts);
+                    return bindElementToSelector(selector).then(function() {
+                      return defer.resolve();
+                    });
+                  }
+                });
+              } else {
+                scripts.push(v);
+              }
               $(v).remove();
+              return false;
             }
             if (v.tagName === "LINK" && v.href) {
-              return v.href = v.href.replace(getPath(location.origin + location.pathname), getPath(template));
+              v.href = v.href.replace(getPath(location.origin + location.pathname), getPath(template));
             }
+            return true;
           };
         })(this)));
         if (deferArr.length === 0) {
