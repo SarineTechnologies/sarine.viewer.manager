@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.16 -  Tuesday, February 24th, 2015, 11:00:43 AM 
+sarine.viewer.manager - v0.0.17 -  Wednesday, February 25th, 2015, 5:20:29 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 class ViewerManger
@@ -129,17 +129,7 @@ class ViewerManger
 			if obj[order] == undefined
 				obj[order] = [] 
 			obj[order].push(v)
-		obj.filter((v)-> return v)
-
-	first_init_viewer : (v) ->
-		defer = $.Deferred()
-		pmId = v.id + "_" + v.element.data('type')	 		
-		$(document).trigger("first_init_start",[{Id : pmId}])						
-		v.first_init().then((v)-> 						
-			$(document).trigger("first_init_end",[{Id : pmId}])				
-			defer.resolve();
-		)
-		defer
+		obj.filter((v)-> return v)	
 
 	init_list : (list,method,defer) ->		
 		_t = @
@@ -151,8 +141,7 @@ class ViewerManger
 		for v of current 
 			pmId = current[v].id + "_" + current[v].element.data('type')
 			$(document).trigger(_method + "_start",[{Id : pmId}])				
-			arr.push current[v][_method]()
-			$(document).trigger(_method + "_end",[{Id : pmId}])  
+			arr.push current[v][_method]().then($(document).trigger(_method + "_end",[{Id : pmId}]))			  
 		$.when.apply($,arr).then(()->
 			if _list.length == 0
 				defer.resolve();  

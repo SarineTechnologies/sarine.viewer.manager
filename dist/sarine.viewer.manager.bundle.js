@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.0.16 -  Tuesday, February 24th, 2015, 11:00:43 AM 
+sarine.viewer.manager - v0.0.17 -  Wednesday, February 25th, 2015, 5:20:29 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -204,26 +204,6 @@ sarine.viewer.manager - v0.0.16 -  Tuesday, February 24th, 2015, 11:00:43 AM
       });
     };
 
-    ViewerManger.prototype.first_init_viewer = function(v) {
-      var defer, pmId;
-      defer = $.Deferred();
-      pmId = v.id + "_" + v.element.data('type');
-      $(document).trigger("first_init_start", [
-        {
-          Id: pmId
-        }
-      ]);
-      v.first_init().then(function(v) {
-        $(document).trigger("first_init_end", [
-          {
-            Id: pmId
-          }
-        ]);
-        return defer.resolve();
-      });
-      return defer;
-    };
-
     ViewerManger.prototype.init_list = function(list, method, defer) {
       var arr, current, pmId, v, _list, _method, _t;
       _t = this;
@@ -239,12 +219,11 @@ sarine.viewer.manager - v0.0.16 -  Tuesday, February 24th, 2015, 11:00:43 AM
             Id: pmId
           }
         ]);
-        arr.push(current[v][_method]());
-        $(document).trigger(_method + "_end", [
+        arr.push(current[v][_method]().then($(document).trigger(_method + "_end", [
           {
             Id: pmId
           }
-        ]);
+        ])));
       }
       $.when.apply($, arr).then(function() {
         if (_list.length === 0) {
