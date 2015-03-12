@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.0.17 -  Wednesday, February 25th, 2015, 5:20:29 PM 
+sarine.viewer.manager - v0.0.18 -  Thursday, March 12th, 2015, 2:11:54 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -219,11 +219,15 @@ sarine.viewer.manager - v0.0.17 -  Wednesday, February 25th, 2015, 5:20:29 PM
             Id: pmId
           }
         ]);
-        arr.push(current[v][_method]().then($(document).trigger(_method + "_end", [
-          {
-            Id: pmId
-          }
-        ])));
+        arr.push(current[v][_method]().then((function(pmId) {
+          return function() {
+            return $(document).trigger(_method + "_end", [
+              {
+                Id: pmId
+              }
+            ]);
+          };
+        })(pmId)));
       }
       $.when.apply($, arr).then(function() {
         if (_list.length === 0) {
