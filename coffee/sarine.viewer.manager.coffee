@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.18 -  Thursday, March 12th, 2015, 2:11:54 PM 
+sarine.viewer.manager - v0.0.19 -  Monday, March 16th, 2015, 6:06:20 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 class ViewerManger
@@ -32,9 +32,18 @@ class ViewerManger
 			toElement = $ "<#{toTag}>"
 			type = $(v).attr("viewer")
 			order = $(v).attr('order') || 99
-			toElement.data({"type": $(v).attr("viewer"), "order": order, "version": $(v).attr("version")})   
-			toElement.addClass("viewer " + type)
-			toElement.attr({"id" : "viewr_#{i}", "order" : order})
+			active = $(v).attr('active')			
+			
+			toElement.data({"type": $(v).attr("viewer"), "order": order, "version": $(v).attr("version"), "active" : active})   
+			toElement.attr({"id" : "viewr_#{i}", "order" : order, "active" : active})
+
+			if(type == "loupe3DFullInspection")
+				menu = $(v).attr('menu') || true
+				toElement.data({"menu" : menu})   
+				toElement.attr({"menu" : menu})
+
+			toElement.addClass("viewer " + type)			
+
 			$(v).replaceWith(toElement)
 			arrDefer.push addViewer(type,toElement)
 		)
