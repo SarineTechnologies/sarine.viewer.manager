@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.0.19 -  Monday, March 16th, 2015, 6:06:20 PM 
+sarine.viewer.manager - v0.0.20 -  Wednesday, March 18th, 2015, 5:16:18 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 
@@ -40,8 +40,11 @@ class ViewerManger
 
 			if(type == "loupe3DFullInspection")
 				menu = $(v).attr('menu') || true
+				coordinates = $(v).attr('coordinates') || true
 				toElement.data({"menu" : menu})   
 				toElement.attr({"menu" : menu})
+				toElement.data({"coordinates" : coordinates})   
+				toElement.attr({"coordinates" : coordinates})
 
 			toElement.addClass("viewer " + type)			
 
