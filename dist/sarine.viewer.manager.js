@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.0.20 -  Wednesday, March 18th, 2015, 5:16:19 PM 
+sarine.viewer.manager - v0.0.21 -  Sunday, March 22nd, 2015, 3:21:38 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -56,7 +56,6 @@ sarine.viewer.manager - v0.0.20 -  Wednesday, March 18th, 2015, 5:16:19 PM
           toElement = $("<" + toTag + ">");
           type = $(v).attr("viewer");
           order = $(v).attr('order') || 99;
-          active = $(v).attr('active');
           toElement.data({
             "type": $(v).attr("viewer"),
             "order": order,
@@ -71,17 +70,16 @@ sarine.viewer.manager - v0.0.20 -  Wednesday, March 18th, 2015, 5:16:19 PM
           if (type === "loupe3DFullInspection") {
             menu = $(v).attr('menu') || true;
             coordinates = $(v).attr('coordinates') || true;
+            active = $(v).attr('active') || true;
             toElement.data({
-              "menu": menu
+              "menu": menu,
+              "coordinates": coordinates,
+              "active": active
             });
             toElement.attr({
-              "menu": menu
-            });
-            toElement.data({
-              "coordinates": coordinates
-            });
-            toElement.attr({
-              "coordinates": coordinates
+              "menu": menu,
+              "coordinates": coordinates,
+              "active": active
             });
           }
           toElement.addClass("viewer " + type);
