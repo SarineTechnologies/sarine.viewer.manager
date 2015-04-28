@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.1.0 -  Monday, April 6th, 2015, 7:03:57 PM 
+sarine.viewer.manager - v0.1.0 -  Tuesday, April 28th, 2015, 5:56:09 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -38,9 +38,11 @@ sarine.viewer.manager - v0.1.0 -  Monday, April 6th, 2015, 7:03:57 PM
     };
 
     function ViewerManger(option) {
+      var cacheVersion;
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
       logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/";
       jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/";
+      cacheVersion = configuration.cacheVersion || "v1";
       viewers = [];
       this.bind = option.template ? loadTemplate : bindElementToSelector;
     }
@@ -117,7 +119,7 @@ sarine.viewer.manager - v0.1.0 -  Monday, April 6th, 2015, 7:03:57 PM
       defer = $.Deferred();
       deferArr = [];
       scripts = [];
-      $("<div>").load(template, function(a, b, c) {
+      $("<div>").load(template + "?" + cacheVersion, function(a, b, c) {
         $(selector).prepend($(a).filter((function(_this) {
           return function(i, v) {
             if (v.tagName === "SCRIPT") {
@@ -162,7 +164,7 @@ sarine.viewer.manager - v0.1.0 -  Monday, April 6th, 2015, 7:03:57 PM
       $.ajaxSetup({
         async: false
       });
-      $.getJSON(jsons.replace("{version}", toElement.data("version") || "v1") + type + ".json", (function(_this) {
+      $.getJSON(jsons.replace("{version}", toElement.data("version") || "v1") + type + ".json?" + cacheVersion, (function(_this) {
         return function(d) {
           return data = d;
         };
@@ -181,7 +183,7 @@ sarine.viewer.manager - v0.1.0 -  Monday, April 6th, 2015, 7:03:57 PM
           "imagesArr": [path]
         };
       }
-      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js");
+      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js") + "?" + cacheVersion;
       s = $("<script>", {
         type: "text/javascript"
       }).appendTo("body").end()[0];
