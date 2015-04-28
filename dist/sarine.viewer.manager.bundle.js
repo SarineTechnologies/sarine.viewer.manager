@@ -52,6 +52,7 @@ sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM
     };
 
     function ViewerManger(option) {
+      var cacheVersion;
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
       window.cacheVersion = "?" + "__VERSION__";
       if (configuration.cacheVersion) {
