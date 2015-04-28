@@ -10,6 +10,16 @@ module.exports = function(grunt) {
             bundlecoffee: [target + "coffee/*.bundle.coffee"],
             postbuild: [target + "build/"]
         },
+        changeVersion: {
+            coffeeBundle: {
+                src: [target + 'coffee/<%= config.name %>.bundle.coffee'],
+                dest: target + 'coffee/<%= config.name %>.bundle.coffee'
+            },
+            files: {
+                src: [target + 'dist/<%= config.name %>.js'],
+                dest: target + 'dist/<%= config.name %>.js'
+            }
+        },
         commentsCoffee: {
             coffee: {
                 src: [target + 'coffee/<%= config.name %>.coffee'],
@@ -42,7 +52,7 @@ module.exports = function(grunt) {
         },
         bower: {
             install: {
-                verbose : true,
+                verbose: true,
                 bowerOptions: {
                     forceLatest: true
                 },
@@ -109,6 +119,8 @@ module.exports = function(grunt) {
         'coffeescript_concat',
         'commentsCoffee:coffeeBundle',
         'concat:coffeebundle',
+        'changeVersion:coffeeBundle',
+        'changeVersion:files',
         'coffee:bundle',
         'commentsCoffee:coffee',
         'concat:coffee',
@@ -116,6 +128,15 @@ module.exports = function(grunt) {
         'uglify',
         'clean:postbuild'
     ]);
+    grunt.registerMultiTask('changeVersion', 'Remove comments from production code', function() {
+        this.files[0].src.forEach(function(file) {
+            var contents = grunt.file.read(file);
+            contents = contents.replace("__VERSION__", grunt.file.readJSON(target + "bower.json").version)
+            grunt.file.write(file, contents);
+
+        });
+
+    })
     grunt.registerMultiTask('commentsCoffee', 'Remove comments from production code', function() {
         this.files[0].src.forEach(function(file) {
             var contents = grunt.file.read(file);

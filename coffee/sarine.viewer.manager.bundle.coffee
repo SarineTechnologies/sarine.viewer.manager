@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.1.0 -  Monday, April 6th, 2015, 7:03:57 PM 
+sarine.viewer.manager - v0.1.0 -  Tuesday, April 28th, 2015, 7:15:17 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 
 class ViewerManger
@@ -22,6 +21,9 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
+		window.cacheVersion = "?" +  "0.1.0"
+		if configuration.cacheVersion
+			window.cacheVersion += configuration.cacheVersion
 		logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/"
 		jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/"
 		viewers = []		
@@ -72,7 +74,7 @@ class ViewerManger
 		defer = $.Deferred()
 		deferArr = []
 		scripts = []
-		$("<div>").load(template,(a,b,c)-> 
+		$("<div>").load(template + window.cacheVersion,(a,b,c)-> 
 			$(selector).prepend($(a).filter( (i,v)=> 
 				if(v.tagName == "SCRIPT" )
 					if(v.src)
@@ -105,7 +107,7 @@ class ViewerManger
 		$.ajaxSetup(
 			async : false
 		);
-		$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json",(d)=>
+		$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json" + window.cacheVersion ,(d)=>
 			data = d;
 		$.ajaxSetup(
 			async : true
@@ -118,7 +120,7 @@ class ViewerManger
 			data.instance = "SarineImage"
 			data.name = "sarine.viewer.image"
 			data.args = {"imagesArr" : [path]} 
-		url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (if location.hash.indexOf("debug") == 1 then ".bundle.js" else ".bundle.min.js")
+		url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (if location.hash.indexOf("debug") == 1 then ".bundle.js" else ".bundle.min.js") + window.cacheVersion
 		# $.getScript(url,()->
 		# 	inst = eval(data.instance)
 		# 	viewers.push new inst $.extend({src : stoneViews.viewers[type],element: toElement},data.args)
