@@ -120,11 +120,11 @@ module.exports = function(grunt) {
         'commentsCoffee:coffeeBundle',
         'concat:coffeebundle',
         'changeVersion:coffeeBundle',
-        'changeVersion:files',
         'coffee:bundle',
         'commentsCoffee:coffee',
         'concat:coffee',
         'coffee:build',
+        'changeVersion:files',
         'uglify',
         'clean:postbuild'
     ]);
