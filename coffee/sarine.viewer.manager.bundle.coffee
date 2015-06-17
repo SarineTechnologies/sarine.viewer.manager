@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.2.1 -  Wednesday, April 29th, 2015, 2:57:09 PM 
+sarine.viewer.manager - v0.2.1 -  Wednesday, June 17th, 2015, 5:11:49 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 
 class ViewerManger
@@ -22,7 +21,7 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
-		window.cacheVersion = "?" +  "0.2.1"
+		window.cacheVersion = "?" +  "__VERSION__"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
 		logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/"
@@ -33,6 +32,7 @@ class ViewerManger
 		defer = $.Deferred()
 		arrDefer = []
 		_t = @
+		document.viewersList = JSON.parse(JSON.stringify(stones[0].viewers)) 
 		$(selector).find(fromTag).each((i, v) =>
 			toElement = $ "<#{toTag}>"
 			type = $(v).attr("viewer")
