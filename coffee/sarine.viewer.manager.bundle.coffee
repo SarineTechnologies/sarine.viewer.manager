@@ -131,7 +131,12 @@ class ViewerManger
 		s = $("<script>",{type:"text/javascript"}).appendTo("body").end()[0]
 		s.onload = ()->
 			inst = eval(data.instance)
-			viewers.push new inst $.extend({src : stoneViews.viewers[type],element: toElement,callbackPic : callbackPic},data.args)
+			viewers.push new inst $.extend({
+				src : stoneViews.viewers[type],
+				element: toElement,
+				callbackPic : callbackPic				 
+			}
+				,data.args)
 			defer.resolve()
 		s.src = url
 
