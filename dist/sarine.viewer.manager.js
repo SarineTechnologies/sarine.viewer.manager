@@ -1,6 +1,10 @@
 
 /*!
+<<<<<<< HEAD
+sarine.viewer.manager - v0.4.0 -  Thursday, July 23rd, 2015, 4:23:08 PM 
+=======
 sarine.viewer.manager - v0.5.0 -  Thursday, July 23rd, 2015, 3:39:47 PM 
+>>>>>>> origin/dev
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -8,7 +12,7 @@ sarine.viewer.manager - v0.5.0 -  Thursday, July 23rd, 2015, 3:39:47 PM
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, bindElementToSelector, findAttribute, fromTag, getPath, jsons, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
+    var addViewer, allViewresList, bindElementToSelector, findAttribute, fromTag, getPath, jsons, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
 
     viewers = [];
 
@@ -28,6 +32,8 @@ sarine.viewer.manager - v0.5.0 -  Thursday, July 23rd, 2015, 3:39:47 PM
 
     logicPath = void 0;
 
+    allViewresList = void 0;
+
     ViewerManger.prototype.bind = Error;
 
     getPath = function(src) {
@@ -45,6 +51,7 @@ sarine.viewer.manager - v0.5.0 -  Thursday, July 23rd, 2015, 3:39:47 PM
       }
       logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/";
       jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/";
+      allViewresList = stoneViews.viewers;
       viewers = [];
       this.bind = option.template ? loadTemplate : bindElementToSelector;
     }
@@ -54,7 +61,7 @@ sarine.viewer.manager - v0.5.0 -  Thursday, July 23rd, 2015, 3:39:47 PM
       defer = $.Deferred();
       arrDefer = [];
       _t = this;
-      document.viewersList = JSON.parse(JSON.stringify(stones[0].viewers));
+      document.viewersList = JSON.parse(JSON.stringify(allViewresList));
       $(selector).find(fromTag).each((function(_this) {
         return function(i, v) {
           var active, coordinates, menu, order, toElement, type;
@@ -94,7 +101,7 @@ sarine.viewer.manager - v0.5.0 -  Thursday, July 23rd, 2015, 3:39:47 PM
         return function(i, v) {
           var $el;
           $el = $(v);
-          return $el.text(findAttribute(stones[0], $el.data('sarineInfo')));
+          return $el.text(findAttribute(stoneViews, $el.data('sarineInfo')));
         };
       })(this));
       $.when.apply($, arrDefer).then(function() {

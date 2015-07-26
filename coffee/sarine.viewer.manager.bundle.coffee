@@ -1,7 +1,10 @@
 ###!
+<<<<<<< HEAD
+sarine.viewer.manager - v0.4.0 -  Thursday, July 23rd, 2015, 4:23:08 PM 
+=======
 sarine.viewer.manager - v0.5.0 -  Thursday, July 23rd, 2015, 3:39:47 PM 
+>>>>>>> origin/dev
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 
 class ViewerManger
@@ -14,6 +17,7 @@ class ViewerManger
 	jsons  = undefined
 	logicRoot  = undefined
 	logicPath  = undefined
+	allViewresList = undefined
 	bind : Error
 	getPath = (src)=>
 		arr = src.split("/")
@@ -22,20 +26,25 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
+<<<<<<< HEAD
+		window.cacheVersion = "?" +  "__VERSION__"
+=======
 		window.cacheVersion = "?" +  "0.5.0"
+>>>>>>> origin/dev
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
 		logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/"
 		jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/"
+		allViewresList = stoneViews.viewers
 		viewers = []		
-		@bind = if option.template then loadTemplate else bindElementToSelector
+		@bind = if option.template then loadTemplate else bindElementToSelector 
 	bindElementToSelector = (selector)-> 
 		defer = $.Deferred()
 		arrDefer = []
 		_t = @
-		document.viewersList = JSON.parse(JSON.stringify(stones[0].viewers)) 
+		document.viewersList = JSON.parse(JSON.stringify(allViewresList)) 
 		$(selector).find(fromTag).each((i, v) =>
-			toElement = $ "<#{toTag}>"
+			toElement = $ "<#{toTag}>"  
 			type = $(v).attr("viewer")
 			order = $(v).attr('order') || 99						
 			
@@ -57,7 +66,7 @@ class ViewerManger
 		)
 		$(selector).find('*[data-sarine-info]').each( (i,v) => 
 			$el = $(v)
-			$el.text findAttribute(stones[0], $el.data('sarineInfo'))					
+			$el.text findAttribute(stoneViews, $el.data('sarineInfo'))					
 		) 
 		$.when.apply($,arrDefer).then(()->defer.resolve())
 		defer
