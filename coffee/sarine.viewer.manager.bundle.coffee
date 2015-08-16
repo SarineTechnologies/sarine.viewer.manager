@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.6.0 -  Sunday, July 26th, 2015, 9:21:17 AM 
+sarine.viewer.manager - v0.6.0 -  Sunday, August 16th, 2015, 2:00:06 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 
 class ViewerManger
@@ -23,7 +22,7 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
-		window.cacheVersion = "?" +  "0.6.0"
+		window.cacheVersion = "?" +  "__VERSION__"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
 		logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/"
@@ -37,13 +36,18 @@ class ViewerManger
 		_t = @
 		document.viewersList = JSON.parse(JSON.stringify(allViewresList)) 
 		$(selector).find(fromTag).each((i, v) =>
+			
 			toElement = $ "<#{toTag}>"  
 			type = $(v).attr("viewer")
 			order = $(v).attr('order') || 99						
 			
+			for attr in v.attributes
+				toElement.data(attr.name,attr.value);
+			
 			toElement.data({"type": $(v).attr("viewer"), "order": order, "version": $(v).attr("version")})   
 			toElement.attr({"id" : "viewr_#{i}", "order" : order})
 
+			
 			if(type == "loupe3DFullInspection")
 				menu = $(v).attr('menu') || true
 				coordinates = $(v).attr('coordinates') || true
