@@ -1,6 +1,6 @@
 {
     "name": "sarine.viewer.manager",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "main": "dist/sarine.viewer.manager.js",
     "ignore": [
         ".git",
