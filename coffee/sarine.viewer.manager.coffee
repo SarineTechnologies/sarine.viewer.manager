@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.8.0 -  Monday, September 7th, 2015, 1:15:46 PM 
+sarine.viewer.manager - v0.8.0 -  Wednesday, November 18th, 2015, 2:13:48 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 class ViewerManger
 	viewers  = []
@@ -106,7 +105,8 @@ class ViewerManger
 		)
 		defer.then ()-> $(document).trigger("loadTemplate")
 
-	
+	existInConfig = (type)->			
+		return typeof configuration.experiences != 'undefined' && configuration.experiences.filter((i)-> return i.atom == type).length > 0		
 
 	addViewer = (type,toElement)->
 		defer = $.Deferred()
@@ -115,6 +115,11 @@ class ViewerManger
 		$.ajaxSetup(
 			async : false
 		);
+
+
+		if typeof configuration.experiences != 'undefined' && !existInConfig(type)
+			return
+		
 		$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json" + window.cacheVersion ,(d)=>
 			data = d;
 		$.ajaxSetup(
