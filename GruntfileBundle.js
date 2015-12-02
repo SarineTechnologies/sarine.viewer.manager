@@ -73,7 +73,8 @@ module.exports = function(grunt) {
         },
         uglify: {
             options: {
-                preserveComments: 'some'
+                preserveComments: 'some',
+                sourceMap : true
             },
             build: {
                 src: target + 'dist/<%= config.name %>.js',
