@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.10.0 -  Wednesday, December 2nd, 2015, 1:37:00 PM 
+sarine.viewer.manager - v0.10.0 -  Sunday, February 7th, 2016, 1:40:06 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -8,7 +8,7 @@ sarine.viewer.manager - v0.10.0 -  Wednesday, December 2nd, 2015, 1:37:00 PM
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, allViewresList, bindElementToSelector, existInConfig, findAttribute, fromTag, getPath, jsons, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
+    var addViewer, allViewresList, bindElementToSelector, existInConfig, findAttribute, fromTag, getPath, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
 
     viewers = [];
 
@@ -23,6 +23,10 @@ sarine.viewer.manager - v0.10.0 -  Wednesday, December 2nd, 2015, 1:37:00 PM
     template = void 0;
 
     jsons = void 0;
+
+    jsonsAll = void 0;
+
+    jsonsAllObj = void 0;
 
     logicRoot = void 0;
 
@@ -41,12 +45,13 @@ sarine.viewer.manager - v0.10.0 -  Wednesday, December 2nd, 2015, 1:37:00 PM
 
     function ViewerManger(option) {
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
-      window.cacheVersion = "?" + "0.10.0";
+      window.cacheVersion = "?" + "__VERSION__";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
       logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/";
       jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/";
+      jsonsAll = stoneViews.viewersBaseUrl + "atomic/bundle/all.json";
       allViewresList = stoneViews.viewers;
       viewers = [];
       this.bind = option.template ? loadTemplate : bindElementToSelector;
@@ -184,14 +189,23 @@ sarine.viewer.manager - v0.10.0 -  Wednesday, December 2nd, 2015, 1:37:00 PM
       if (typeof configuration.experiences !== 'undefined' && !existInConfig(type)) {
         return;
       }
-      $.getJSON(jsons.replace("{version}", toElement.data("version") || "v1") + type + ".json" + window.cacheVersion, (function(_this) {
-        return function(d) {
-          return data = d;
-        };
-      })(this));
-      $.ajaxSetup({
-        async: true
-      });
+
+      /*$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json" + window.cacheVersion ,(d)=>
+      			data = d;
+       */
+      if (jsonsAllObj === void 0) {
+        $.getJSON(jsonsAll + window.cacheVersion, (function(_this) {
+          return function(d) {
+            jsonsAllObj = d;
+            return data = d[toElement.data("version") || "v1"][type];
+          };
+        })(this));
+        $.ajaxSetup({
+          async: true
+        });
+      } else {
+        data = jsonsAllObj[toElement.data("version") || "v1"][type];
+      }
       callbackPic = data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png";
       if (stoneViews.viewers[type] === null) {
         src = callbackPic.split("/");

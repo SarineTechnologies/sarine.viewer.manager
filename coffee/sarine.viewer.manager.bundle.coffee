@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.10.0 -  Wednesday, December 2nd, 2015, 1:37:00 PM 
+sarine.viewer.manager - v0.10.0 -  Sunday, February 7th, 2016, 1:40:05 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 
 class ViewerManger
@@ -12,6 +11,8 @@ class ViewerManger
 	stoneViews = undefined 
 	template  = undefined
 	jsons  = undefined
+	jsonsAll = undefined
+	jsonsAllObj = undefined
 	logicRoot  = undefined
 	logicPath  = undefined
 	allViewresList = undefined
@@ -23,11 +24,12 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
-		window.cacheVersion = "?" +  "0.10.0"
+		window.cacheVersion = "?" +  "__VERSION__"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
 		logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/"
-		jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/"
+		jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/"	
+		jsonsAll = 	stoneViews.viewersBaseUrl + "atomic/bundle/all.json"
 		allViewresList = stoneViews.viewers
 		viewers = []		
 		@bind = if option.template then loadTemplate else bindElementToSelector 
@@ -122,11 +124,18 @@ class ViewerManger
 		if typeof configuration.experiences != 'undefined' && !existInConfig(type)
 			return
 		
-		$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json" + window.cacheVersion ,(d)=>
-			data = d;
-		$.ajaxSetup(
-			async : true
-		); 
+		###$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json" + window.cacheVersion ,(d)=>
+			data = d;###
+		if (jsonsAllObj == undefined)
+			$.getJSON jsonsAll + window.cacheVersion ,(d)=>
+				jsonsAllObj = d
+				data = d[toElement.data("version") || "v1"][type]
+			$.ajaxSetup(
+				async : true
+			); 
+		else
+			data = jsonsAllObj[toElement.data("version") || "v1"][type]
+			
 		callbackPic = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png")
 		if stoneViews.viewers[type] == null
 			src = callbackPic.split("/")
