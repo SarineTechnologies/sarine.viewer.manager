@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.11.0 -  Monday, February 8th, 2016, 5:44:11 PM 
+sarine.viewer.manager - v0.11.0 -  Wednesday, March 9th, 2016, 3:05:55 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 class ViewerManger
 	viewers  = []
@@ -21,12 +20,18 @@ class ViewerManger
 		arr = src.split("/") 
 		arr.pop() 
 		arr.join("/")
+	initLocalStorage = (type)->
+		if typeof(Storage) != "undefined" 
+			if localStorage.getItem(type) == null
+				localStorage.setItem(type, "[]")				
 
-	constructor: (option) ->
-		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
+	constructor: (option) -> 
+		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option		
 		window.cacheVersion = "?" +  "__VERSION__"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
+		initLocalStorage('stones')
+		initLocalStorage('templates')		
 		logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/"
 		jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/"	
 		jsonsAll = 	stoneViews.viewersBaseUrl + "atomic/bundle/all.json"
