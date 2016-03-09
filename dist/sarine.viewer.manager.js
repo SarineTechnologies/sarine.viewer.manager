@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.11.0 -  Monday, February 8th, 2016, 5:44:11 PM 
+sarine.viewer.manager - v0.11.0 -  Wednesday, March 9th, 2016, 3:05:55 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -8,7 +8,7 @@ sarine.viewer.manager - v0.11.0 -  Monday, February 8th, 2016, 5:44:11 PM
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, allViewresList, bindElementToSelector, existInConfig, findAttribute, fromTag, getPath, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
+    var addViewer, allViewresList, bindElementToSelector, existInConfig, findAttribute, fromTag, getPath, initLocalStorage, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
 
     viewers = [];
 
@@ -43,12 +43,22 @@ sarine.viewer.manager - v0.11.0 -  Monday, February 8th, 2016, 5:44:11 PM
       return arr.join("/");
     };
 
+    initLocalStorage = function(type) {
+      if (typeof Storage !== "undefined") {
+        if (localStorage.getItem(type) === null) {
+          return localStorage.setItem(type, "[]");
+        }
+      }
+    };
+
     function ViewerManger(option) {
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
-      window.cacheVersion = "?" + "0.11.0";
+      window.cacheVersion = "?" + "__VERSION__";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
+      initLocalStorage('stones');
+      initLocalStorage('templates');
       logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/";
       jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/";
       jsonsAll = stoneViews.viewersBaseUrl + "atomic/bundle/all.json";
