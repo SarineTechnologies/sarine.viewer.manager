@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.12.0 -  Wednesday, March 9th, 2016, 3:53:25 PM 
+sarine.viewer.manager - v0.12.0 -  Thursday, March 10th, 2016, 9:57:55 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -53,7 +53,7 @@ sarine.viewer.manager - v0.12.0 -  Wednesday, March 9th, 2016, 3:53:25 PM
 
     function ViewerManger(option) {
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
-      window.cacheVersion = "?" + "0.12.0";
+      window.cacheVersion = "?" + "__VERSION__";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
@@ -294,6 +294,7 @@ sarine.viewer.manager - v0.12.0 -  Wednesday, March 9th, 2016, 3:53:25 PM
       }
       $.when.apply($, arr).then(function() {
         if (_list.length === 0) {
+          $(document).trigger("all_" + _method + "_ended");
           return defer.resolve();
         } else {
           return _t.init_list(_list, _method, defer);

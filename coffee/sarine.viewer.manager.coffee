@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.12.0 -  Wednesday, March 9th, 2016, 3:53:25 PM 
+sarine.viewer.manager - v0.12.0 -  Thursday, March 10th, 2016, 9:57:55 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 class ViewerManger
 	viewers  = []
@@ -195,6 +194,7 @@ class ViewerManger
 			arr.push current[v][_method]().then do(pmId) -> -> $(document).trigger(_method + "_end",[{Id : pmId}])			  
 		$.when.apply($,arr).then(()->
 			if _list.length == 0
+				$(document).trigger("all_" + _method + "_ended")				
 				defer.resolve();  
 			else
 				_t.init_list(_list,_method,defer)
@@ -203,7 +203,9 @@ class ViewerManger
 		
 	first_init : ()-> 
 		defer = $.Deferred()		 
-		@init_list(@sortByOrder(viewers),"first_init").then(defer.resolve)
+		@init_list(@sortByOrder(viewers),"first_init").then(			
+			defer.resolve
+		)
 		defer
 
 	full_init : ()->
