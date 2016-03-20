@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.12.0 -  Thursday, March 10th, 2016, 9:57:55 AM 
+sarine.viewer.manager - v0.12.0 -  Sunday, March 20th, 2016, 1:49:26 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -152,6 +152,9 @@ sarine.viewer.manager - v0.12.0 -  Thursday, March 10th, 2016, 9:57:55 AM
               if (v.src) {
                 deferArr.push($.Deferred());
                 v.src = v.src.replace(getPath(location.origin + location.pathname), getPath(template));
+                if (v.src.indexOf('app.bundle.min.js') !== -1 && location.hash.indexOf("debug") !== -1) {
+                  v.src = v.src.replace('app.bundle.min.js', 'app.bundle.js');
+                }
                 $.getScript(v.src, function() {
                   deferArr.pop();
                   if (deferArr.length === 0) {
