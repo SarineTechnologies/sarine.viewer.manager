@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.12.0 -  Sunday, March 20th, 2016, 1:49:26 PM 
+sarine.viewer.manager - v0.12.0 -  Monday, April 4th, 2016, 1:59:06 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 ###
 
@@ -73,6 +73,16 @@ class ViewerManger
 		$(selector).find('*[data-sarine-info]').each( (i,v) => 
 			$el = $(v)
 			$el.text findAttribute(stoneViews, $el.data('sarineInfo'))					
+		) 
+		$(selector).find('*[data-sarine-report]').each( (i,v) => 
+			$el = $(v)			
+			attr = $el.data('sarineReport')
+			if attr.indexOf('::') == -1
+				$el.text findAttribute(report, attr)					
+			else
+				date = findAttribute(report, attr.split('::')[0])
+				format = attr.split('::')[1]
+				$el.text moment(date).format(format) 
 		) 
 		$.when.apply($,arrDefer).then(()->defer.resolve())
 		defer
