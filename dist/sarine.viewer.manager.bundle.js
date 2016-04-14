@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.13.0 -  Tuesday, April 5th, 2016, 9:22:29 AM 
+sarine.viewer.manager - v0.13.0 -  Wednesday, April 13th, 2016, 3:17:01 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -53,7 +53,7 @@ sarine.viewer.manager - v0.13.0 -  Tuesday, April 5th, 2016, 9:22:29 AM
 
     function ViewerManger(option) {
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
-      window.cacheVersion = "?" + "0.13.0";
+      window.cacheVersion = "?" + "__VERSION__";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
@@ -118,6 +118,20 @@ sarine.viewer.manager - v0.13.0 -  Tuesday, April 5th, 2016, 9:22:29 AM
           var $el;
           $el = $(v);
           return $el.text(findAttribute(stoneViews, $el.data('sarineInfo')));
+        };
+      })(this));
+      $(selector).find('*[data-sarine-info-display]').each((function(_this) {
+        return function(i, v) {
+          var $el, item, key, mapObj;
+          $el = $(v);
+          key = findAttribute(stoneViews, $el.data('sarineInfoDisplay'));
+          mapObj = findAttribute(gradeScales, $el.data('sarineInfoDisplay').replace('stoneProperties.', ''));
+          item = mapObj.filter(function(v) {
+            return v.name === key;
+          })[0];
+          if (item !== null && typeof item !== 'undefined') {
+            return $el.text(item["default-display"]);
+          }
         };
       })(this));
       $(selector).find('*[data-sarine-report]').each((function(_this) {
