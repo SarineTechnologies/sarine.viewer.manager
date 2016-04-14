@@ -1,7 +1,6 @@
 ###!
-sarine.viewer.manager - v0.13.0 -  Tuesday, April 5th, 2016, 9:22:29 AM 
+sarine.viewer.manager - v0.13.0 -  Wednesday, April 13th, 2016, 3:17:01 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
-
 ###
 
 class ViewerManger
@@ -29,7 +28,7 @@ class ViewerManger
 
 	constructor: (option) -> 
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option		
-		window.cacheVersion = "?" +  "0.13.0"
+		window.cacheVersion = "?" +  "__VERSION__"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
 		initLocalStorage('stones')
@@ -74,6 +73,14 @@ class ViewerManger
 		$(selector).find('*[data-sarine-info]').each( (i,v) => 
 			$el = $(v)
 			$el.text findAttribute(stoneViews, $el.data('sarineInfo'))					
+		) 
+		$(selector).find('*[data-sarine-info-display]').each( (i,v) => 
+			$el = $(v)
+			key = findAttribute(stoneViews, $el.data('sarineInfoDisplay'))
+			mapObj = findAttribute(gradeScales, $el.data('sarineInfoDisplay').replace('stoneProperties.','')) 			
+			item = mapObj.filter((v)-> return v.name == key)[0] 			
+			if(item != null && typeof item != 'undefined')
+				$el.text item["default-display"]
 		) 
 		$(selector).find('*[data-sarine-report]').each( (i,v) => 
 			$el = $(v)			
