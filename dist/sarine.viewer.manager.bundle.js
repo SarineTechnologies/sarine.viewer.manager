@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM 
+sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -53,7 +53,7 @@ sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM
 
     function ViewerManger(option) {
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
-      window.cacheVersion = "?" + "__VERSION__";
+      window.cacheVersion = "?" + "0.14.0";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
@@ -222,7 +222,7 @@ sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM
     };
 
     addViewer = function(type, toElement) {
-      var callbackPic, data, defer, inst, path, src;
+      var callbackPic, data, defer, path, s, src, url;
       defer = $.Deferred();
       data = void 0;
       callbackPic = void 0;
@@ -260,15 +260,23 @@ sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM
           "imagesArr": [path]
         };
       }
-      inst = eval(data.instance);
-      viewers.push(new inst($.extend({
-        src: stoneViews.viewers[type],
-        element: toElement,
-        callbackPic: callbackPic,
-        stoneProperties: stoneViews.stoneProperties,
-        baseUrl: stoneViews.viewersBaseUrl
-      }, data.args)));
-      defer.resolve();
+      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js") + window.cacheVersion;
+      s = $("<script>", {
+        type: "text/javascript"
+      }).appendTo("body").end()[0];
+      s.onload = function() {
+        var inst;
+        inst = eval(data.instance);
+        viewers.push(new inst($.extend({
+          src: stoneViews.viewers[type],
+          element: toElement,
+          callbackPic: callbackPic,
+          stoneProperties: stoneViews.stoneProperties,
+          baseUrl: stoneViews.viewersBaseUrl
+        }, data.args)));
+        return defer.resolve();
+      };
+      s.src = url;
       return defer;
     };
 

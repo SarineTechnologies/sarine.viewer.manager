@@ -1,6 +1,7 @@
 ###!
-sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM 
+sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
+
 ###
 
 class ViewerManger
@@ -15,9 +16,8 @@ class ViewerManger
 	jsonsAllObj = undefined
 	logicRoot  = undefined
 	logicPath  = undefined
-	allViewresList = undefined	
+	allViewresList = undefined
 	bind : Error
-
 	getPath = (src)=>
 		arr = src.split("/") 
 		arr.pop() 
@@ -29,7 +29,7 @@ class ViewerManger
 
 	constructor: (option) -> 
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option		
-		window.cacheVersion = "?" +  "__VERSION__"
+		window.cacheVersion = "?" +  "0.14.0"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
 		initLocalStorage('stones')
@@ -38,7 +38,7 @@ class ViewerManger
 		jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/"	
 		jsonsAll = 	stoneViews.viewersBaseUrl + "atomic/bundle/all.json"
 		allViewresList = stoneViews.viewers
-		viewers = []			
+		viewers = []		
 		@bind = if option.template then loadTemplate else bindElementToSelector 
 	bindElementToSelector = (selector)-> 
 		defer = $.Deferred()
@@ -171,19 +171,26 @@ class ViewerManger
 			data.instance = "SarineImage"
 			data.name = "sarine.viewer.image"
 			data.args = {"imagesArr" : [path]} 
-		
-		inst = eval(data.instance)
-		viewers.push new inst $.extend({
-			src : stoneViews.viewers[type],
-			element: toElement,
-			callbackPic : callbackPic,
-			stoneProperties : stoneViews.stoneProperties,
-			baseUrl :  stoneViews.viewersBaseUrl
-		},data.args)
-		defer.resolve()
-		
+		url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (if location.hash.indexOf("debug") == 1 then ".bundle.js" else ".bundle.min.js") + window.cacheVersion
+		# $.getScript(url,()->
+		# 	inst = eval(data.instance)
+		# 	viewers.push new inst $.extend({src : stoneViews.viewers[type],element: toElement},data.args)
+		# 	defer.resolve()
+		# )
+		s = $("<script>",{type:"text/javascript"}).appendTo("body").end()[0]
+		s.onload = ()->
+			inst = eval(data.instance)
+			viewers.push new inst $.extend({
+				src : stoneViews.viewers[type],
+				element: toElement,
+				callbackPic : callbackPic,
+				stoneProperties : stoneViews.stoneProperties,
+				baseUrl :  stoneViews.viewersBaseUrl
+			},data.args)
+			defer.resolve()
+		s.src = url
 
-		defer		
+		defer
 
 	getViewers : ()-> viewers
 
