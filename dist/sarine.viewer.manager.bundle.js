@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM 
+sarine.viewer.manager - v0.14.0 -  Sunday, July 31st, 2016, 11:46:56 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -73,30 +73,32 @@ sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM
       arrDefer = [];
       _t = this;
       document.viewersList = JSON.parse(JSON.stringify(allViewresList));
-      $(selector).find(fromTag).each((function(_this) {
+      $(configuration.experiences).each((function(_this) {
         return function(i, v) {
-          var active, attr, coordinates, menu, order, toElement, type, _i, _len, _ref;
-          toElement = $("<" + toTag + ">");
-          type = $(v).attr("viewer");
-          order = $(v).attr('order') || 99;
-          _ref = v.attributes;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            attr = _ref[_i];
-            toElement.data(attr.name, attr.value);
+          var active, coordinates, kind, menu, order, toElement, type;
+          if (v.atom === 'aboutUs' || v.atom === 'youtube') {
+            return;
           }
+          toElement = $("<" + toTag + ">");
+          type = v.atom;
+          order = v.order || 99;
+          kind = v.kind;
+          $.each(v, function(key, value) {
+            return toElement.data(key, value);
+          });
           toElement.data({
-            "type": $(v).attr("viewer"),
+            "type": type,
             "order": order,
-            "version": $(v).attr("version")
+            "version": v.version
           });
           toElement.attr({
             "id": "viewr_" + i,
             "order": order
           });
           if (type === "loupe3DFullInspection") {
-            menu = $(v).attr('menu') || true;
-            coordinates = $(v).attr('coordinates') || true;
-            active = $(v).attr('active') || true;
+            menu = v.menu || true;
+            coordinates = v.coordinates || true;
+            active = v.active || true;
             toElement.data({
               "menu": menu,
               "coordinates": coordinates,
@@ -109,7 +111,11 @@ sarine.viewer.manager - v0.14.0 -  Wednesday, June 22nd, 2016, 8:22:53 AM
             });
           }
           toElement.addClass("viewer " + type);
-          $(v).replaceWith(toElement);
+          if (kind) {
+            $('sarine-viewer[kind="' + kind + '"]').replaceWith(toElement);
+          } else {
+            $('sarine-viewer[viewer="' + type + '"]').replaceWith(toElement);
+          }
           return arrDefer.push(addViewer(type, toElement));
         };
       })(this));
