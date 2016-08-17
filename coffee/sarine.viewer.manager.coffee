@@ -64,8 +64,6 @@ class ViewerManger
 			thumbnailMenu: infoPrefix + 'thumbnail_menu'
 		}
 
-
-
 		configurationToTemplateMapper = {
 			loupeRealView: {
 				experience: slidePrefix + 'summary',
