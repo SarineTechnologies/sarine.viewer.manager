@@ -21,6 +21,7 @@ class ViewerManger
 	experiencesList = undefined
 	iconsList = undefined
 	infoPopups = undefined
+	viewerType = undefined
 	bind : Error
 	getPath = (src)=>
 		arr = src.split("/")
@@ -43,6 +44,7 @@ class ViewerManger
 		infoPrefix = 'info_'
 
 		popupInfoMapper = {
+			about: infoPrefix + 'about',
 			arrows: infoPrefix + 'arrows',
 			brilliance: infoPrefix + 'brilliance',
 			carat: infoPrefix + 'carat',
@@ -57,6 +59,7 @@ class ViewerManger
 			loupe: infoPrefix + 'loupe',
 			loupe3D: infoPrefix + 'loupe3d',
 			loupeInscription: infoPrefix + 'loupeInscription',
+			report: infoPrefix + 'report',
 			scintillation: infoPrefix + 'scintillation',
 			sparkle: infoPrefix + 'sparkle',
 			summary: infoPrefix + 'summary',
@@ -68,7 +71,7 @@ class ViewerManger
 			loupeRealView: {
 				experience: slidePrefix + 'summary',
 				icon: iconPrefix + 'summary',
-				infos: [ popupInfoMapper.color, popupInfoMapper.clarity, popupInfoMapper.cut, popupInfoMapper.carat, popupInfoMapper.cut ]
+				infos: [ popupInfoMapper.color, popupInfoMapper.clarity, popupInfoMapper.cut, popupInfoMapper.carat, popupInfoMapper.cut, popupInfoMapper.summary ]
 			},
 			lightReportViewer: {
 				experience: {
@@ -118,7 +121,8 @@ class ViewerManger
 			},
 			aboutUs: {
 				experience: slidePrefix + 'aboutus',
-				icon: iconPrefix + 'aboutus'
+				icon: iconPrefix + 'aboutus',
+				infos: [ popupInfoMapper.about ]
 			},
 			loupeRealViewImage: {
 				experience: null,
@@ -126,13 +130,14 @@ class ViewerManger
 			},
 			externalPdf: {
 				experience: slidePrefix + 'report',
-				icon: iconPrefix + 'report'
+				icon: iconPrefix + 'report',
+				infos: [ popupInfoMapper.report ]
 			}
 		}
 		return
 
 	constructor: (option) ->
-		{fromTag, toTag, stoneViews,template,jsons,logicRoot} = option
+		{fromTag, toTag, stoneViews,template,jsons,logicRoot, viewerType} = option
 		window.cacheVersion = "?" +  "__VERSION__"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
@@ -280,15 +285,24 @@ class ViewerManger
 
 				##build slides dynamically - Start##
 				if(typeof(v)== 'object')
-					sliderList = $(v).find('.slider__list')
-					svgContainer = $(v).find('#svg-container')
-					popupsContainer = $(v).find('.popups-container')
-					if(sliderList.length == 1)
-						sliderList.append(experiencesList)
-					if(svgContainer.length == 1)
-						svgContainer.append(iconsList)
-					if(popupsContainer.length == 1)
-						popupsContainer.append(infoPopups)
+					if(viewerType == 'widget')
+						sliderList = $(v).find('.slider__list')
+						svgContainer = $(v).find('#svg-container')
+						popupsContainer = $(v).find('.popups-container')
+						if(sliderList.length == 1)
+							sliderList.append(experiencesList)
+						if(svgContainer.length == 1)
+							svgContainer.append(iconsList)
+						if(popupsContainer.length == 1)
+							popupsContainer.append(infoPopups)
+					else if (viewerType == 'dashboard')
+						sliderList = $(v).find('.slide-wrap')
+						popupsContainer = $(v).find('.popups-container')
+						if(sliderList.length == 1)
+							sliderList.append(experiencesList)
+						if(popupsContainer.length == 1)
+							popupsContainer.append(infoPopups)
+
 				##build slides dynamically - End##
 
 				return true
