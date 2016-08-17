@@ -241,13 +241,13 @@ class ViewerManger
 			templateMap = getTemplateMapperByConfigName exp
 			if(templateMap.templateName && templateMap.iconName)
 				if(sarineViewerTemplates[templateMap.templateName])
-					templates += sarineViewerTemplates[templateMap.templateName]()
+					templates += sarineViewerTemplates[templateMap.templateName]
 					$.each templateMap.infos, (i, infoName) ->
 						if(sarineViewerTemplates[infoName])
-							infos += sarineViewerTemplates[infoName]()
+							infos += sarineViewerTemplates[infoName]
 						return
 				if(sarineViewerTemplates[templateMap.iconName])
-					icons += sarineViewerTemplates[templateMap.iconName]()
+					icons += sarineViewerTemplates[templateMap.iconName]
 			return
 		return {
 		templates: templates
