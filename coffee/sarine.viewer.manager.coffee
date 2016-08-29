@@ -43,7 +43,7 @@ class ViewerManger
 		allTemplates = getAllTemplates()
 		experiencesList = allTemplates.templates
 		iconsList = allTemplates.icons
-		infoPopupsList = allTemplates.infoPopupsList
+		infoPopupsList = allTemplates.infoPopups
 		return
 
 	initTemplatesMapper = ()->
