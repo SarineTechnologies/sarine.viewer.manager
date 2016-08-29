@@ -21,8 +21,15 @@ class ViewerManger
 	experiencesList = undefined
 	iconsList = undefined
 	infoPopups = undefined
-	viewerType = undefined
+	templateContainers = undefined
 	bind : Error
+	getTemplateLists = () =>
+		return {
+			experiencesList: experiencesList,
+			iconsList: iconsList,
+			infoPopups: infoPopups
+		}
+
 	getPath = (src)=>
 		arr = src.split("/")
 		arr.pop()
@@ -137,7 +144,7 @@ class ViewerManger
 		return
 
 	constructor: (option) ->
-		{fromTag, toTag, stoneViews,template,jsons,logicRoot, viewerType} = option
+		{fromTag, toTag, stoneViews,template,jsons,logicRoot, templateContainers} = option
 		window.cacheVersion = "?" +  "__VERSION__"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
@@ -264,7 +271,7 @@ class ViewerManger
 		defer = $.Deferred()
 		deferArr = []
 		scripts = []
-		$("<div>").load(template + window.cacheVersion,(a,b,c)->
+		$("<div>").load(template + window.cacheVersion,(a,b,c) =>
 			$(selector).prepend($(a).filter( (i,v)=>
 				if(v.tagName == "SCRIPT" )
 					if(v.src)
@@ -285,24 +292,12 @@ class ViewerManger
 
 				##build slides dynamically - Start##
 				if(typeof(v)== 'object')
-					if(viewerType == 'widget')
-						sliderList = $(v).find('.slider__list')
-						svgContainer = $(v).find('#svg-container')
-						popupsContainer = $(v).find('.popups-container')
-						if(sliderList.length == 1)
-							sliderList.append(experiencesList)
-						if(svgContainer.length == 1)
-							svgContainer.append(iconsList)
-						if(popupsContainer.length == 1)
-							popupsContainer.append(infoPopups)
-					else if (viewerType == 'dashboard')
-						sliderList = $(v).find('.slide-wrap')
-						popupsContainer = $(v).find('.popups-container')
-						if(sliderList.length == 1)
-							sliderList.append(experiencesList)
-						if(popupsContainer.length == 1)
-							popupsContainer.append(infoPopups)
-
+					$.each templateContainers, ((key, container) =>
+						lists = getTemplateLists()
+						ph = $(v).find(container.value)
+						if(ph.length == 1 && lists[container.key])
+							ph.append(lists[container.key])
+					)
 				##build slides dynamically - End##
 
 				return true
