@@ -20,14 +20,14 @@ class ViewerManger
 	popupInfoMapper = undefined
 	experiencesList = undefined
 	iconsList = undefined
-	infoPopups = undefined
+	infoPopupsList = undefined
 	templateContainers = undefined
 	bind : Error
 	getTemplateLists = () =>
 		return {
 			experiencesList: experiencesList,
 			iconsList: iconsList,
-			infoPopups: infoPopups
+			infoPopupsList: infoPopupsList
 		}
 
 	getPath = (src)=>
@@ -43,7 +43,7 @@ class ViewerManger
 		allTemplates = getAllTemplates()
 		experiencesList = allTemplates.templates
 		iconsList = allTemplates.icons
-		infoPopups = allTemplates.infoPopups
+		infoPopupsList = allTemplates.infoPopupsList
 
 	initTemplatesMapper = ()->
 		iconPrefix = 'icon_'
