@@ -44,6 +44,7 @@ class ViewerManger
 		experiencesList = allTemplates.templates
 		iconsList = allTemplates.icons
 		infoPopupsList = allTemplates.infoPopupsList
+		return
 
 	initTemplatesMapper = ()->
 		iconPrefix = 'icon_'
