@@ -292,7 +292,7 @@ class ViewerManger
 					v.href = v.href.replace getPath(location.origin + location.pathname),getPath(template)
 
 				##build slides dynamically - Start##
-				if(typeof(v)== 'object')
+				if(templateContainers && typeof(v)== 'object')
 					$.each templateContainers, ((key, container) =>
 						lists = getTemplateLists()
 						ph = $(v).find(container.value)
