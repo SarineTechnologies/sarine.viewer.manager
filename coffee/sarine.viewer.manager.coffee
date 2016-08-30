@@ -41,9 +41,10 @@ class ViewerManger
 
 	initTemplates = ()->
 		allTemplates = getAllTemplates()
-		experiencesList = allTemplates.templates
-		iconsList = allTemplates.icons
-		infoPopupsList = allTemplates.infoPopups
+		if(allTemplates)
+			experiencesList = allTemplates.templates
+			iconsList = allTemplates.icons
+			infoPopupsList = allTemplates.infoPopups
 		return
 
 	initTemplatesMapper = ()->
@@ -247,26 +248,28 @@ class ViewerManger
 		return ret;
 
 	getAllTemplates = () ->
-		templates = ''
-		icons = ''
-		infos = ''
-		$.each configuration.experiences, (key, exp) ->
-			templateMap = getTemplateMapperByConfigName exp
-			if(templateMap.templateName && templateMap.iconName)
-				if(sarineViewerTemplates[templateMap.templateName])
-					templates += sarineViewerTemplates[templateMap.templateName]
-					$.each templateMap.infos, (i, infoName) ->
-						if(sarineViewerTemplates[infoName])
-							infos += sarineViewerTemplates[infoName]
-						return
-				if(sarineViewerTemplates[templateMap.iconName])
-					icons += sarineViewerTemplates[templateMap.iconName]
-			return
-		return {
-		templates: templates
-		icons: icons
-		infoPopups: infos
-		}
+		if(window.sarineViewerTemplates != undefined)
+			templates = ''
+			icons = ''
+			infos = ''
+			$.each configuration.experiences, (key, exp) ->
+				templateMap = getTemplateMapperByConfigName exp
+				if(templateMap.templateName && templateMap.iconName)
+					if(sarineViewerTemplates[templateMap.templateName])
+						templates += sarineViewerTemplates[templateMap.templateName]
+						$.each templateMap.infos, (i, infoName) ->
+							if(sarineViewerTemplates[infoName])
+								infos += sarineViewerTemplates[infoName]
+							return
+					if(sarineViewerTemplates[templateMap.iconName])
+						icons += sarineViewerTemplates[templateMap.iconName]
+				return
+			return {
+			templates: templates
+			icons: icons
+			infoPopups: infos
+			}
+		return null
 
 	loadTemplate = (selector) ->
 		defer = $.Deferred()
