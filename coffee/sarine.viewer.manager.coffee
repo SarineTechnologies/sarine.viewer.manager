@@ -282,6 +282,8 @@ class ViewerManger
 						deferArr.push $.Deferred()
 						v.src = v.src.replace getPath(location.origin + location.pathname),getPath(template)
 						if v.src.indexOf('app.bundle.min.js') != -1 && location.hash.indexOf("debug") != -1 then v.src = v.src.replace('app.bundle.min.js', 'app.bundle.js')
+
+						$.ajaxSetup cache: true
 						$.getScript v.src, ()=>
 							deferArr.pop()
 							if deferArr.length == 0
