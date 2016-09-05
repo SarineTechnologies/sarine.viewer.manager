@@ -296,7 +296,7 @@ class ViewerManger
 				if(v.tagName == "LINK" && v.href)
 					v.href = v.href.replace getPath(location.origin + location.pathname),getPath(template)
 
-				##build slides dynamically - Start##
+				##build template dynamically - Start##
 				if(templateContainers && typeof(v)== 'object')
 					$.each templateContainers, ((key, container) =>
 						lists = getTemplateLists()
@@ -304,7 +304,7 @@ class ViewerManger
 						if(ph.length == 1 && lists[container.key])
 							ph.append(lists[container.key])
 					)
-				##build slides dynamically - End##
+				##build template dynamically - End##
 
 				return true
 			));
