@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM 
+sarine.viewer.manager - v0.14.0 -  Tuesday, September 6th, 2016, 5:42:06 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -8,7 +8,7 @@ sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, allViewresList, bindElementToSelector, existInConfig, findAttribute, fromTag, getPath, initLocalStorage, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
+    var addViewer, allViewresList, bindElementToSelector, configurationToTemplateMapper, existInConfig, experiencesList, findAttribute, fromTag, getAllTemplates, getPath, getTemplateLists, getTemplateMapperByConfigName, iconsList, infoPopupsList, initLocalStorage, initTemplates, initTemplatesMapper, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, popupInfoMapper, recurse, stoneViews, template, templateContainers, toTag, viewers;
 
     viewers = [];
 
@@ -34,7 +34,27 @@ sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM
 
     allViewresList = void 0;
 
+    configurationToTemplateMapper = void 0;
+
+    popupInfoMapper = void 0;
+
+    experiencesList = void 0;
+
+    iconsList = void 0;
+
+    infoPopupsList = void 0;
+
+    templateContainers = void 0;
+
     ViewerManger.prototype.bind = Error;
+
+    getTemplateLists = function() {
+      return {
+        experiencesList: experiencesList,
+        iconsList: iconsList,
+        infoPopupsList: infoPopupsList
+      };
+    };
 
     getPath = function(src) {
       var arr;
@@ -51,14 +71,123 @@ sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM
       }
     };
 
+    initTemplates = function() {
+      var allTemplates;
+      allTemplates = getAllTemplates();
+      if (allTemplates) {
+        experiencesList = allTemplates.templates;
+        iconsList = allTemplates.icons;
+        infoPopupsList = allTemplates.infoPopups;
+      }
+    };
+
+    initTemplatesMapper = function() {
+      var iconPrefix, infoPrefix, slidePrefix;
+      iconPrefix = 'icon_';
+      slidePrefix = 'slide_';
+      infoPrefix = 'info_';
+      popupInfoMapper = {
+        about: infoPrefix + 'about',
+        arrows: infoPrefix + 'arrows',
+        brilliance: infoPrefix + 'brilliance',
+        carat: infoPrefix + 'carat',
+        clarity: infoPrefix + 'clarity',
+        color: infoPrefix + 'color',
+        cut: infoPrefix + 'cut',
+        cutAndSymbols: infoPrefix + 'cut_n_sym',
+        cutAndSymbols3D: infoPrefix + 'cut_n_sym3d',
+        fire: infoPrefix + 'fire',
+        hearts: infoPrefix + 'hearts',
+        light: infoPrefix + 'light',
+        loupe: infoPrefix + 'loupe',
+        loupe3D: infoPrefix + 'loupe3d',
+        loupeInscription: infoPrefix + 'loupeInscription',
+        report: infoPrefix + 'report',
+        scintillation: infoPrefix + 'scintillation',
+        sparkle: infoPrefix + 'sparkle',
+        summary: infoPrefix + 'summary',
+        symmetry: infoPrefix + 'symmetry',
+        thumbnailMenu: infoPrefix + 'thumbnail_menu'
+      };
+      configurationToTemplateMapper = {
+        loupeRealView: {
+          experience: slidePrefix + 'summary',
+          icon: iconPrefix + 'summary',
+          infos: [popupInfoMapper.color, popupInfoMapper.clarity, popupInfoMapper.cut, popupInfoMapper.carat, popupInfoMapper.cut, popupInfoMapper.summary]
+        },
+        lightReportViewer: {
+          experience: {
+            brilliance: slidePrefix + 'brilliance',
+            sparkle: slidePrefix + 'sparkle',
+            fire: slidePrefix + 'fire',
+            symmetry: slidePrefix + 'symmetry',
+            templateVersion: slidePrefix + 'light'
+          },
+          icon: {
+            brilliance: iconPrefix + 'brilliance',
+            sparkle: iconPrefix + 'sparkle',
+            fire: iconPrefix + 'fire',
+            symmetry: iconPrefix + 'symmetry',
+            templateVersion: iconPrefix + 'light'
+          },
+          infos: [popupInfoMapper.brilliance, popupInfoMapper.sparkle, popupInfoMapper.fire, popupInfoMapper.symmetry, popupInfoMapper.light, popupInfoMapper.scintillation]
+        },
+        loupeTopInspection: {
+          experience: slidePrefix + 'loupe',
+          icon: iconPrefix + 'loupe',
+          infos: [popupInfoMapper.loupe]
+        },
+        loupe3DFullInspection: {
+          experience: slidePrefix + 'loupe3d',
+          icon: iconPrefix + 'loupe3d',
+          infos: [popupInfoMapper.loupe3D]
+        },
+        loupeInscription: {
+          experience: slidePrefix + 'loupeInscription',
+          icon: iconPrefix + 'loupeInscription',
+          infos: [popupInfoMapper.loupeInscription]
+        },
+        cutHeartsAndArrows: {
+          experience: slidePrefix + 'hna',
+          icon: iconPrefix + 'hna',
+          infos: [popupInfoMapper.hearts, popupInfoMapper.arrows]
+        },
+        cut2DView: {
+          experience: slidePrefix + 'cut',
+          icon: iconPrefix + 'cut',
+          infos: [popupInfoMapper.cutAndSymbols, popupInfoMapper.cutAndSymbols3D]
+        },
+        youtube: {
+          experience: slidePrefix + 'youtube',
+          icon: iconPrefix + 'youtube'
+        },
+        aboutUs: {
+          experience: slidePrefix + 'aboutus',
+          icon: iconPrefix + 'aboutus',
+          infos: [popupInfoMapper.about]
+        },
+        loupeRealViewImage: {
+          experience: null,
+          icon: null
+        },
+        externalPdf: {
+          experience: slidePrefix + 'report',
+          icon: iconPrefix + 'report',
+          infos: [popupInfoMapper.report]
+        }
+      };
+    };
+
     function ViewerManger(option) {
-      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
+      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot, templateContainers = option.templateContainers;
       window.cacheVersion = "?" + "0.14.0";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
       initLocalStorage('stones');
       initLocalStorage('templates');
+      initTemplatesMapper();
+      initTemplates();
       logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/";
       jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/";
       jsonsAll = stoneViews.viewersBaseUrl + "atomic/bundle/all.json";
@@ -170,14 +299,72 @@ sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM
       return recurse(obj, ns.split('.'));
     };
 
+    getTemplateMapperByConfigName = function(exp) {
+      var ret, templateVersion;
+      ret = {};
+      if (configurationToTemplateMapper[exp.atom].infos) {
+        ret.infos = configurationToTemplateMapper[exp.atom].infos;
+      } else {
+        ret.infos = [];
+      }
+      if (exp.atom === 'lightReportViewer') {
+        if (exp.hasOwnProperty('templateVersion')) {
+          ret.iconName = configurationToTemplateMapper[exp.atom].icon.templateVersion;
+          templateVersion = parseInt(exp.templateVersion);
+          if (templateVersion !== NaN) {
+            ret.templateName = configurationToTemplateMapper.lightReportViewer.experience.templateVersion + templateVersion.toString();
+          }
+        } else if (exp.hasOwnProperty('page')) {
+          ret.templateName = configurationToTemplateMapper[exp.atom].experience[exp.page];
+          ret.iconName = configurationToTemplateMapper[exp.atom].icon[exp.page];
+        }
+      } else {
+        ret.templateName = configurationToTemplateMapper[exp.atom].experience;
+        ret.iconName = configurationToTemplateMapper[exp.atom].icon;
+      }
+      return ret;
+    };
+
+    getAllTemplates = function() {
+      var icons, infos, templates;
+      if (window.sarineViewerTemplates !== void 0) {
+        templates = '';
+        icons = '';
+        infos = '';
+        $.each(configuration.experiences, function(key, exp) {
+          var templateMap;
+          templateMap = getTemplateMapperByConfigName(exp);
+          if (templateMap.templateName && templateMap.iconName) {
+            if (sarineViewerTemplates[templateMap.templateName]) {
+              templates += sarineViewerTemplates[templateMap.templateName];
+              $.each(templateMap.infos, function(i, infoName) {
+                if (sarineViewerTemplates[infoName]) {
+                  infos += sarineViewerTemplates[infoName];
+                }
+              });
+            }
+            if (sarineViewerTemplates[templateMap.iconName]) {
+              icons += sarineViewerTemplates[templateMap.iconName];
+            }
+          }
+        });
+        return {
+          templates: templates,
+          icons: icons,
+          infoPopups: infos
+        };
+      }
+      return null;
+    };
+
     loadTemplate = function(selector) {
       var defer, deferArr, scripts;
       defer = $.Deferred();
       deferArr = [];
       scripts = [];
-      $("<div>").load(template + window.cacheVersion, function(a, b, c) {
-        $(selector).prepend($(a).filter((function(_this) {
-          return function(i, v) {
+      $("<div>").load(template + window.cacheVersion, (function(_this) {
+        return function(a, b, c) {
+          $(selector).prepend($(a).filter(function(i, v) {
             if (v.tagName === "SCRIPT") {
               if (v.src) {
                 deferArr.push($.Deferred());
@@ -185,6 +372,9 @@ sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM
                 if (v.src.indexOf('app.bundle.min.js') !== -1 && location.hash.indexOf("debug") !== -1) {
                   v.src = v.src.replace('app.bundle.min.js', 'app.bundle.js');
                 }
+                $.ajaxSetup({
+                  cache: true
+                });
                 $.getScript(v.src, function() {
                   deferArr.pop();
                   if (deferArr.length === 0) {
@@ -203,13 +393,23 @@ sarine.viewer.manager - v0.14.0 -  Sunday, April 17th, 2016, 9:31:34 AM
             if (v.tagName === "LINK" && v.href) {
               v.href = v.href.replace(getPath(location.origin + location.pathname), getPath(template));
             }
+            if (templateContainers && typeof v === 'object') {
+              $.each(templateContainers, (function(key, container) {
+                var lists, ph;
+                lists = getTemplateLists();
+                ph = $(v).find(container.value);
+                if (ph.length === 1 && lists[container.key]) {
+                  return ph.append(lists[container.key]);
+                }
+              }));
+            }
             return true;
-          };
-        })(this)));
-        if (deferArr.length === 0) {
-          return bindElementToSelector(selector).then(defer.resolve);
-        }
-      });
+          }));
+          if (deferArr.length === 0) {
+            return bindElementToSelector(selector).then(defer.resolve);
+          }
+        };
+      })(this));
       return defer.then(function() {
         return $(document).trigger("loadTemplate");
       });
