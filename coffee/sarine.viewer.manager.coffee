@@ -48,101 +48,10 @@ class ViewerManger
 		return
 
 	initTemplatesMapper = ()->
-		iconPrefix = 'icon_'
-		slidePrefix = 'slide_'
-		infoPrefix = 'info_'
+		configurationToTemplateMapper = null
+		if window.sarineViewerTemplatesMapping && sarineViewerTemplatesMapping.mapper
+			configurationToTemplateMapper = sarineViewerTemplatesMapping.mapper.getMapper()
 
-		popupInfoMapper = {
-			about: infoPrefix + 'about',
-			arrows: infoPrefix + 'arrows',
-			brilliance: infoPrefix + 'brilliance',
-			carat: infoPrefix + 'carat',
-			clarity: infoPrefix + 'clarity'
-			color: infoPrefix + 'color',
-			cut: infoPrefix + 'cut',
-			cutAndSymbols: infoPrefix + 'cut_n_sym',
-			cutAndSymbols3D: infoPrefix + 'cut_n_sym3d',
-			fire: infoPrefix + 'fire',
-			hearts: infoPrefix + 'hearts',
-			light: infoPrefix + 'light',
-			loupe: infoPrefix + 'loupe',
-			loupe3D: infoPrefix + 'loupe3d',
-			loupeInscription: infoPrefix + 'loupeInscription',
-			report: infoPrefix + 'report',
-			scintillation: infoPrefix + 'scintillation',
-			sparkle: infoPrefix + 'sparkle',
-			summary: infoPrefix + 'summary',
-			symmetry: infoPrefix + 'symmetry',
-			thumbnailMenu: infoPrefix + 'thumbnail_menu'
-		}
-
-		configurationToTemplateMapper = {
-			loupeRealView: {
-				experience: slidePrefix + 'summary',
-				icon: iconPrefix + 'summary',
-				infos: [ popupInfoMapper.color, popupInfoMapper.clarity, popupInfoMapper.cut, popupInfoMapper.carat, popupInfoMapper.cut, popupInfoMapper.summary ]
-			},
-			lightReportViewer: {
-				experience: {
-					brilliance: slidePrefix + 'brilliance'
-					sparkle: slidePrefix + 'sparkle'
-					fire: slidePrefix + 'fire'
-					symmetry: slidePrefix + 'symmetry',
-					templateVersion: slidePrefix + 'light'
-				},
-				icon: {
-					brilliance: iconPrefix + 'brilliance',
-					sparkle: iconPrefix + 'sparkle',
-					fire: iconPrefix + 'fire',
-					symmetry: iconPrefix + 'symmetry',
-					templateVersion: iconPrefix + 'light'
-				},
-				infos: [ popupInfoMapper.brilliance, popupInfoMapper.sparkle, popupInfoMapper.fire, popupInfoMapper.symmetry, popupInfoMapper.light, popupInfoMapper.scintillation ]
-			},
-			loupeTopInspection: {
-				experience: slidePrefix + 'loupe',
-				icon: iconPrefix + 'loupe',
-				infos: [ popupInfoMapper.loupe ]
-			},
-			loupe3DFullInspection: {
-				experience: slidePrefix + 'loupe3d',
-				icon: iconPrefix + 'loupe3d',
-				infos: [ popupInfoMapper.loupe3D ]
-			},
-			loupeInscription: {
-				experience: slidePrefix + 'loupeInscription',
-				icon: iconPrefix + 'loupeInscription',
-				infos: [ popupInfoMapper.loupeInscription ]
-			},
-			cutHeartsAndArrows: {
-				experience: slidePrefix + 'hna',
-				icon: iconPrefix + 'hna',
-				infos: [ popupInfoMapper.hearts, popupInfoMapper.arrows ]
-			},
-			cut2DView: {
-				experience: slidePrefix + 'cut',
-				icon: iconPrefix + 'cut',
-				infos: [ popupInfoMapper.cutAndSymbols, popupInfoMapper.cutAndSymbols3D ]
-			},
-			youtube: {
-				experience: slidePrefix + 'youtube',
-				icon: iconPrefix + 'youtube'
-			},
-			aboutUs: {
-				experience: slidePrefix + 'aboutus',
-				icon: iconPrefix + 'aboutus',
-				infos: [ popupInfoMapper.about ]
-			},
-			loupeRealViewImage: {
-				experience: null,
-				icon: null
-			},
-			externalPdf: {
-				experience: slidePrefix + 'report',
-				icon: iconPrefix + 'report',
-				infos: [ popupInfoMapper.report ]
-			}
-		}
 		return
 
 	constructor: (option) ->
