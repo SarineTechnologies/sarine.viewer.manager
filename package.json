@@ -6,7 +6,7 @@
     "url": "https://github.com/SarineTechnologies/sarine.viewer.manager.git"
   },
   "devDependencies": {
-    "grunt": "^1.0.1",
+    "grunt": "~0.4.5",
     "grunt-bower-task": "^0.4.0",
     "grunt-cmd": "0.0.3",
     "grunt-coffeescript-concat": "^0.2.0",

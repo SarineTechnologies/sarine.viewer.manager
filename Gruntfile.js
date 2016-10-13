@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     dirname = dirname.pop();
     var branch = "dev"
     require('load-grunt-tasks')(grunt)
-    var files = ["Gruntfile.js", "copyright.txt", "GruntfileBundle.js", "package.json", "dist/*.js", "dist/*.map",  "coffee/*.coffee", "bower.json", "release.cmd", "commit.cmd"]
+    var files = ["Gruntfile.js", "copyright.txt", "GruntfileBundle.js", "package.json", "dist/*.js", "dist/*.map",  "coffee/*.coffee", "bower.json", "release.cmd", "commit.cmd", "bundle.cmd"]
     var message = "commit"
     grunt.initConfig({
         config: grunt.file.readJSON("bower.json"),
