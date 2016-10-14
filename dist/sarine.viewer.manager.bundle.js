@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.15.0 -  Thursday, September 22nd, 2016, 2:30:19 PM 
+sarine.viewer.manager - v0.16.0 -  Friday, October 14th, 2016, 8:26:54 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -8,7 +8,7 @@ sarine.viewer.manager - v0.15.0 -  Thursday, September 22nd, 2016, 2:30:19 PM
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, allViewresList, bindElementToSelector, existInConfig, findAttribute, fromTag, getPath, initLocalStorage, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, recurse, stoneViews, template, toTag, viewers;
+    var addViewer, allViewresList, bindElementToSelector, configurationToTemplateMapper, existInConfig, experiencesList, findAttribute, fromTag, getAllTemplates, getPath, getTemplateLists, getTemplateMapperByConfigName, iconsList, infoPopupsList, initLocalStorage, initTemplates, initTemplatesMapper, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, popupInfoMapper, recurse, stoneViews, template, templateContainers, toTag, viewers;
 
     viewers = [];
 
@@ -34,7 +34,27 @@ sarine.viewer.manager - v0.15.0 -  Thursday, September 22nd, 2016, 2:30:19 PM
 
     allViewresList = void 0;
 
+    configurationToTemplateMapper = void 0;
+
+    popupInfoMapper = void 0;
+
+    experiencesList = void 0;
+
+    iconsList = void 0;
+
+    infoPopupsList = void 0;
+
+    templateContainers = void 0;
+
     ViewerManger.prototype.bind = Error;
+
+    getTemplateLists = function() {
+      return {
+        experiencesList: experiencesList,
+        iconsList: iconsList,
+        infoPopupsList: infoPopupsList
+      };
+    };
 
     getPath = function(src) {
       var arr;
@@ -51,14 +71,33 @@ sarine.viewer.manager - v0.15.0 -  Thursday, September 22nd, 2016, 2:30:19 PM
       }
     };
 
+    initTemplates = function() {
+      var allTemplates;
+      allTemplates = getAllTemplates();
+      if (allTemplates) {
+        experiencesList = allTemplates.templates;
+        iconsList = allTemplates.icons;
+        infoPopupsList = allTemplates.infoPopups;
+      }
+    };
+
+    initTemplatesMapper = function() {
+      configurationToTemplateMapper = null;
+      if (window.sarineViewerTemplatesMapping && sarineViewerTemplatesMapping.mapper) {
+        configurationToTemplateMapper = sarineViewerTemplatesMapping.mapper.getMapper();
+      }
+    };
+
     function ViewerManger(option) {
-      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot;
-      window.cacheVersion = "?" + "0.15.0";
+      fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot, templateContainers = option.templateContainers;
+      window.cacheVersion = "?" + "0.16.0";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
       initLocalStorage('stones');
       initLocalStorage('templates');
+      initTemplatesMapper();
+      initTemplates();
       logicRoot = stoneViews.viewersBaseUrl + "atomic/{version}/js/";
       jsons = stoneViews.viewersBaseUrl + "atomic/{version}/jsons/";
       jsonsAll = stoneViews.viewersBaseUrl + "atomic/bundle/all.json";
@@ -170,14 +209,72 @@ sarine.viewer.manager - v0.15.0 -  Thursday, September 22nd, 2016, 2:30:19 PM
       return recurse(obj, ns.split('.'));
     };
 
+    getTemplateMapperByConfigName = function(exp) {
+      var ret, templateVersion;
+      ret = {};
+      if (configurationToTemplateMapper[exp.atom].infos) {
+        ret.infos = configurationToTemplateMapper[exp.atom].infos;
+      } else {
+        ret.infos = [];
+      }
+      if (exp.atom === 'lightReportViewer') {
+        if (exp.hasOwnProperty('templateVersion')) {
+          ret.iconName = configurationToTemplateMapper[exp.atom].icon.templateVersion;
+          templateVersion = parseInt(exp.templateVersion);
+          if (templateVersion !== NaN) {
+            ret.templateName = configurationToTemplateMapper.lightReportViewer.experience.templateVersion + templateVersion.toString();
+          }
+        } else if (exp.hasOwnProperty('page')) {
+          ret.templateName = configurationToTemplateMapper[exp.atom].experience[exp.page];
+          ret.iconName = configurationToTemplateMapper[exp.atom].icon[exp.page];
+        }
+      } else {
+        ret.templateName = configurationToTemplateMapper[exp.atom].experience;
+        ret.iconName = configurationToTemplateMapper[exp.atom].icon;
+      }
+      return ret;
+    };
+
+    getAllTemplates = function() {
+      var icons, infos, templates;
+      if (window.sarineViewerTemplates !== void 0) {
+        templates = '';
+        icons = '';
+        infos = '';
+        $.each(configuration.experiences, function(key, exp) {
+          var templateMap;
+          templateMap = getTemplateMapperByConfigName(exp);
+          if (templateMap.templateName && templateMap.iconName) {
+            if (sarineViewerTemplates[templateMap.templateName]) {
+              templates += sarineViewerTemplates[templateMap.templateName];
+              $.each(templateMap.infos, function(i, infoName) {
+                if (sarineViewerTemplates[infoName]) {
+                  infos += sarineViewerTemplates[infoName];
+                }
+              });
+            }
+            if (sarineViewerTemplates[templateMap.iconName]) {
+              icons += sarineViewerTemplates[templateMap.iconName];
+            }
+          }
+        });
+        return {
+          templates: templates,
+          icons: icons,
+          infoPopups: infos
+        };
+      }
+      return null;
+    };
+
     loadTemplate = function(selector) {
       var defer, deferArr, scripts;
       defer = $.Deferred();
       deferArr = [];
       scripts = [];
-      $("<div>").load(template + window.cacheVersion, function(a, b, c) {
-        $(selector).prepend($(a).filter((function(_this) {
-          return function(i, v) {
+      $("<div>").load(template + window.cacheVersion, (function(_this) {
+        return function(a, b, c) {
+          $(selector).prepend($(a).filter(function(i, v) {
             if (v.tagName === "SCRIPT") {
               if (v.src) {
                 deferArr.push($.Deferred());
@@ -185,6 +282,9 @@ sarine.viewer.manager - v0.15.0 -  Thursday, September 22nd, 2016, 2:30:19 PM
                 if (v.src.indexOf('app.bundle.min.js') !== -1 && location.hash.indexOf("debug") !== -1) {
                   v.src = v.src.replace('app.bundle.min.js', 'app.bundle.js');
                 }
+                $.ajaxSetup({
+                  cache: true
+                });
                 $.getScript(v.src, function() {
                   deferArr.pop();
                   if (deferArr.length === 0) {
@@ -203,13 +303,23 @@ sarine.viewer.manager - v0.15.0 -  Thursday, September 22nd, 2016, 2:30:19 PM
             if (v.tagName === "LINK" && v.href) {
               v.href = v.href.replace(getPath(location.origin + location.pathname), getPath(template));
             }
+            if (templateContainers && typeof v === 'object') {
+              $.each(templateContainers, (function(key, container) {
+                var lists, ph;
+                lists = getTemplateLists();
+                ph = $(v).find(container.value);
+                if (ph.length === 1 && lists[container.key]) {
+                  return ph.append(lists[container.key]);
+                }
+              }));
+            }
             return true;
-          };
-        })(this)));
-        if (deferArr.length === 0) {
-          return bindElementToSelector(selector).then(defer.resolve);
-        }
-      });
+          }));
+          if (deferArr.length === 0) {
+            return bindElementToSelector(selector).then(defer.resolve);
+          }
+        };
+      })(this));
       return defer.then(function() {
         return $(document).trigger("loadTemplate");
       });
