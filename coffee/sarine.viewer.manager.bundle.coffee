@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.17.0 -  Wednesday, October 26th, 2016, 2:59:29 PM 
+sarine.viewer.manager - v0.18.0 -  Tuesday, November 8th, 2016, 2:47:01 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 
 ###
@@ -57,7 +57,7 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot, templateContainers} = option
-		window.cacheVersion = "?" +  "0.17.0"
+		window.cacheVersion = "?" +  "0.18.0"
 		if configuration.cacheVersion
 			window.cacheVersion += configuration.cacheVersion
 		initLocalStorage('stones')
@@ -163,6 +163,7 @@ class ViewerManger
 			templates = ''
 			icons = ''
 			infos = ''
+			infosIndex = []
 			$.each configuration.experiences, (key, exp) ->
 				templateMap = getTemplateMapperByConfigName exp
 				if(templateMap.templateName && templateMap.iconName)
@@ -170,7 +171,9 @@ class ViewerManger
 						templates += sarineViewerTemplates[templateMap.templateName]
 						$.each templateMap.infos, (i, infoName) ->
 							if(sarineViewerTemplates[infoName])
-								infos += sarineViewerTemplates[infoName]
+								if(!infosIndex[infoName])
+									infos += sarineViewerTemplates[infoName]
+									infosIndex[infoName] = true
 							return
 					if(sarineViewerTemplates[templateMap.iconName])
 						icons += sarineViewerTemplates[templateMap.iconName]

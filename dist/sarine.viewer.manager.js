@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.17.0 -  Wednesday, October 26th, 2016, 2:59:29 PM 
+sarine.viewer.manager - v0.18.0 -  Tuesday, November 8th, 2016, 2:47:02 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -90,7 +90,7 @@ sarine.viewer.manager - v0.17.0 -  Wednesday, October 26th, 2016, 2:59:29 PM
 
     function ViewerManger(option) {
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot, templateContainers = option.templateContainers;
-      window.cacheVersion = "?" + "0.17.0";
+      window.cacheVersion = "?" + "0.18.0";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
@@ -236,11 +236,12 @@ sarine.viewer.manager - v0.17.0 -  Wednesday, October 26th, 2016, 2:59:29 PM
     };
 
     getAllTemplates = function() {
-      var icons, infos, templates;
+      var icons, infos, infosIndex, templates;
       if (window.sarineViewerTemplates !== void 0) {
         templates = '';
         icons = '';
         infos = '';
+        infosIndex = [];
         $.each(configuration.experiences, function(key, exp) {
           var templateMap;
           templateMap = getTemplateMapperByConfigName(exp);
@@ -249,7 +250,10 @@ sarine.viewer.manager - v0.17.0 -  Wednesday, October 26th, 2016, 2:59:29 PM
               templates += sarineViewerTemplates[templateMap.templateName];
               $.each(templateMap.infos, function(i, infoName) {
                 if (sarineViewerTemplates[infoName]) {
-                  infos += sarineViewerTemplates[infoName];
+                  if (!infosIndex[infoName]) {
+                    infos += sarineViewerTemplates[infoName];
+                    infosIndex[infoName] = true;
+                  }
                 }
               });
             }
