@@ -162,6 +162,7 @@ class ViewerManger
 			templates = ''
 			icons = ''
 			infos = ''
+			infosIndex = []
 			$.each configuration.experiences, (key, exp) ->
 				templateMap = getTemplateMapperByConfigName exp
 				if(templateMap.templateName && templateMap.iconName)
@@ -169,7 +170,9 @@ class ViewerManger
 						templates += sarineViewerTemplates[templateMap.templateName]
 						$.each templateMap.infos, (i, infoName) ->
 							if(sarineViewerTemplates[infoName])
-								infos += sarineViewerTemplates[infoName]
+								if(!infosIndex[infoName])
+									infos += sarineViewerTemplates[infoName]
+									infosIndex[infoName] = true
 							return
 					if(sarineViewerTemplates[templateMap.iconName])
 						icons += sarineViewerTemplates[templateMap.iconName]
