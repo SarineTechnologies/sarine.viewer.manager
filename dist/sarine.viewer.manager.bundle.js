@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.18.0 -  Tuesday, November 8th, 2016, 2:47:01 PM 
+sarine.viewer.manager - v0.18.0 -  Monday, November 14th, 2016, 1:55:24 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -272,61 +272,49 @@ sarine.viewer.manager - v0.18.0 -  Tuesday, November 8th, 2016, 2:47:01 PM
     };
 
     loadTemplate = function(selector) {
-      var defer, deferArr, scripts;
-      defer = $.Deferred();
-      deferArr = [];
-      scripts = [];
-      $("<div>").load(template + window.cacheVersion, (function(_this) {
-        return function(a, b, c) {
-          $(selector).prepend($(a).filter(function(i, v) {
-            if (v.tagName === "SCRIPT") {
-              if (v.src) {
-                deferArr.push($.Deferred());
-                v.src = v.src.replace(getPath(location.origin + location.pathname), getPath(template));
-                if (v.src.indexOf('app.bundle.min.js') !== -1 && location.hash.indexOf("debug") !== -1) {
-                  v.src = v.src.replace('app.bundle.min.js', 'app.bundle.js');
-                }
-                $.ajaxSetup({
-                  cache: true
-                });
-                $.getScript(v.src, function() {
-                  deferArr.pop();
-                  if (deferArr.length === 0) {
-                    $(selector).append(scripts);
-                    return bindElementToSelector(selector).then(function() {
-                      return defer.resolve();
-                    });
-                  }
-                });
-              } else {
-                scripts.push(v);
-              }
-              $(v).remove();
-              return false;
-            }
-            if (v.tagName === "LINK" && v.href) {
-              v.href = v.href.replace(getPath(location.origin + location.pathname), getPath(template));
-            }
-            if (templateContainers && typeof v === 'object') {
-              $.each(templateContainers, (function(key, container) {
-                var lists, ph;
-                lists = getTemplateLists();
-                ph = $(v).find(container.value);
-                if (ph.length === 1 && lists[container.key]) {
-                  return ph.append(lists[container.key]);
-                }
-              }));
-            }
-            return true;
-          }));
-          if (deferArr.length === 0) {
-            return bindElementToSelector(selector).then(defer.resolve);
-          }
-        };
-      })(this));
-      return defer.then(function() {
-        return $(document).trigger("loadTemplate");
-      });
+      return $(document).trigger("loadTemplate");
+
+      /*defer = $.Deferred()
+      		deferArr = []
+      		scripts = []
+      		$("<div>").load(template + window.cacheVersion,(a,b,c) =>
+      			$(selector).prepend($(a).filter( (i,v)=>
+      				if(v.tagName == "SCRIPT" )
+      					if(v.src)
+      						deferArr.push $.Deferred()
+      						v.src = v.src.replace getPath(location.origin + location.pathname),getPath(template)
+      						if v.src.indexOf('app.bundle.min.js') != -1 && location.hash.indexOf("debug") != -1 then v.src = v.src.replace('app.bundle.min.js', 'app.bundle.js')
+      
+      						$.ajaxSetup cache: true
+      						$.getScript v.src, ()=>
+      							deferArr.pop()
+      							if deferArr.length == 0
+      								$(selector).append scripts
+      								bindElementToSelector(selector).then(()=>defer.resolve())
+      					else
+      						scripts.push v
+      					$(v).remove();
+      					return false
+      				if(v.tagName == "LINK" && v.href)
+      					v.href = v.href.replace getPath(location.origin + location.pathname),getPath(template)
+      
+      				 *#build template dynamically - Start##
+      				if(templateContainers && typeof(v)== 'object')
+      					$.each templateContainers, ((key, container) =>
+      						lists = getTemplateLists()
+      						ph = $(v).find(container.value)
+      						if(ph.length == 1 && lists[container.key])
+      							ph.append(lists[container.key])
+      					)
+      				 *#build template dynamically - End##
+      
+      				return true
+      			));
+      			if deferArr.length == 0
+      				bindElementToSelector(selector).then(defer.resolve)
+      		)
+      		defer.then ()-> $(document).trigger("loadTemplate")
+       */
     };
 
     existInConfig = function(type) {
