@@ -122,7 +122,7 @@ class ViewerManger
 				date = findAttribute(report, attr.split('::')[0])
 				format = attr.split('::')[1]
 
-				$el.text moment(date).utc().format(format) 
+        $el.text moment.utc(date).format(format)
 		) 
 		$.when.apply($,arrDefer).then(()->defer.resolve())
 		defer
