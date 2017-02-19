@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.18.0 -  Monday, November 14th, 2016, 1:55:24 PM 
+sarine.viewer.manager - v0.19.0 -  Sunday, February 19th, 2017, 5:23:00 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -90,7 +90,7 @@ sarine.viewer.manager - v0.18.0 -  Monday, November 14th, 2016, 1:55:24 PM
 
     function ViewerManger(option) {
       fromTag = option.fromTag, toTag = option.toTag, stoneViews = option.stoneViews, template = option.template, jsons = option.jsons, logicRoot = option.logicRoot, templateContainers = option.templateContainers;
-      window.cacheVersion = "?" + "0.18.0";
+      window.cacheVersion = "?" + "0.19.0";
       if (configuration.cacheVersion) {
         window.cacheVersion += configuration.cacheVersion;
       }
@@ -185,7 +185,7 @@ sarine.viewer.manager - v0.18.0 -  Monday, November 14th, 2016, 1:55:24 PM
           } else {
             date = findAttribute(report, attr.split('::')[0]);
             format = attr.split('::')[1];
-            return $el.text(moment(date).utc().format(format));
+            return $el.text(moment.utc(date).format(format));
           }
         };
       })(this));
@@ -273,48 +273,6 @@ sarine.viewer.manager - v0.18.0 -  Monday, November 14th, 2016, 1:55:24 PM
 
     loadTemplate = function(selector) {
       return $(document).trigger("loadTemplate");
-
-      /*defer = $.Deferred()
-      		deferArr = []
-      		scripts = []
-      		$("<div>").load(template + window.cacheVersion,(a,b,c) =>
-      			$(selector).prepend($(a).filter( (i,v)=>
-      				if(v.tagName == "SCRIPT" )
-      					if(v.src)
-      						deferArr.push $.Deferred()
-      						v.src = v.src.replace getPath(location.origin + location.pathname),getPath(template)
-      						if v.src.indexOf('app.bundle.min.js') != -1 && location.hash.indexOf("debug") != -1 then v.src = v.src.replace('app.bundle.min.js', 'app.bundle.js')
-      
-      						$.ajaxSetup cache: true
-      						$.getScript v.src, ()=>
-      							deferArr.pop()
-      							if deferArr.length == 0
-      								$(selector).append scripts
-      								bindElementToSelector(selector).then(()=>defer.resolve())
-      					else
-      						scripts.push v
-      					$(v).remove();
-      					return false
-      				if(v.tagName == "LINK" && v.href)
-      					v.href = v.href.replace getPath(location.origin + location.pathname),getPath(template)
-      
-      				 *#build template dynamically - Start##
-      				if(templateContainers && typeof(v)== 'object')
-      					$.each templateContainers, ((key, container) =>
-      						lists = getTemplateLists()
-      						ph = $(v).find(container.value)
-      						if(ph.length == 1 && lists[container.key])
-      							ph.append(lists[container.key])
-      					)
-      				 *#build template dynamically - End##
-      
-      				return true
-      			));
-      			if deferArr.length == 0
-      				bindElementToSelector(selector).then(defer.resolve)
-      		)
-      		defer.then ()-> $(document).trigger("loadTemplate")
-       */
     };
 
     existInConfig = function(type) {
@@ -334,10 +292,6 @@ sarine.viewer.manager - v0.18.0 -  Monday, November 14th, 2016, 1:55:24 PM
       if (typeof configuration.experiences !== 'undefined' && !existInConfig(type)) {
         return;
       }
-
-      /*$.getJSON jsons.replace("{version}",toElement.data("version") || "v1") + type + ".json" + window.cacheVersion ,(d)=>
-      			data = d;
-       */
       if (jsonsAllObj === void 0) {
         $.getJSON(jsonsAll + window.cacheVersion, (function(_this) {
           return function(d) {
