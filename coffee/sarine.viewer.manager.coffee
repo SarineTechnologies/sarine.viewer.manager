@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.19.0 -  Sunday, February 19th, 2017, 5:23:00 PM 
+sarine.viewer.manager - v0.19.0 -  Tuesday, July 11th, 2017, 2:20:40 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 
 ###
@@ -187,7 +187,7 @@ class ViewerManger
 		$(document).trigger("loadTemplate")
 		
 	existInConfig = (type)->
-		return typeof configuration.experiences != 'undefined' && configuration.experiences.filter((i)-> return i.atom == type).length > 0
+		return configuration.experiences && typeof configuration.experiences != 'undefined' && configuration.experiences.filter((i)-> return i.atom == type).length > 0
 
 	addViewer = (type,toElement)->
 		defer = $.Deferred()
@@ -198,7 +198,7 @@ class ViewerManger
 		);
 
 
-		if typeof configuration.experiences != 'undefined' && !existInConfig(type)
+		if configuration.experiences && typeof configuration.experiences != 'undefined' && !existInConfig(type)
 			return
 
 		if (jsonsAllObj == undefined)
