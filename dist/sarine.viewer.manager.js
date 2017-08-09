@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.21.0 -  Wednesday, August 9th, 2017, 4:55:41 PM 
+sarine.viewer.manager - v0.21.0 -  Wednesday, August 9th, 2017, 4:57:46 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -8,7 +8,7 @@ sarine.viewer.manager - v0.21.0 -  Wednesday, August 9th, 2017, 4:55:41 PM
   var ViewerManger;
 
   ViewerManger = (function() {
-    var addViewer, allViewresList, bindElementToSelector, configurationToTemplateMapper, existInConfig, experiencesList, findAttribute, fromTag, getAllTemplates, getPath, getTemplateLists, getTemplateMapperByConfigName, iconsList, infoPopupsList, initLocalStorage, initTemplates, initTemplatesMapper, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, popupInfoMapper, recurse, stoneViews, template, templateContainers, toTag, viewers;
+    var addViewer, allViewresList, bindElementToSelector, configurationToTemplateMapper, experiencesList, findAttribute, fromTag, getAllTemplates, getPath, getTemplateLists, getTemplateMapperByConfigName, iconsList, infoPopupsList, initLocalStorage, initTemplates, initTemplatesMapper, jsons, jsonsAll, jsonsAllObj, loadTemplate, logicPath, logicRoot, popupInfoMapper, recurse, stoneViews, template, templateContainers, toTag, viewers;
 
     viewers = [];
 
@@ -273,12 +273,6 @@ sarine.viewer.manager - v0.21.0 -  Wednesday, August 9th, 2017, 4:55:41 PM
 
     loadTemplate = function(selector) {
       return $(document).trigger("loadTemplate");
-    };
-
-    existInConfig = function(type) {
-      return configuration.experiences && typeof configuration.experiences !== 'undefined' && configuration.experiences.filter(function(i) {
-        return i.atom === type;
-      }).length > 0;
     };
 
     addViewer = function(type, toElement) {
