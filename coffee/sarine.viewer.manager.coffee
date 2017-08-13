@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.21.0 -  Wednesday, August 9th, 2017, 4:57:46 PM 
+sarine.viewer.manager - v0.21.0 -  Thursday, August 10th, 2017, 5:43:13 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 
 ###
@@ -100,19 +100,19 @@ class ViewerManger
 			$(v).replaceWith(toElement)
 			arrDefer.push addViewer(type,toElement)
 		)
-		$(selector).find('*[data-sarine-info]').each( (i,v) =>
-			$el = $(v)
-			$el.text findAttribute(stoneViews, $el.data('sarineInfo'))
-		)
-		$(selector).find('*[data-sarine-info-display]').each( (i,v) =>
-			$el = $(v)
-			key = findAttribute(stoneViews, $el.data('sarineInfoDisplay'))
-			mapObj = findAttribute(gradeScales, $el.data('sarineInfoDisplay').replace('stoneProperties.',''))
-			if(mapObj && key)
-				item = mapObj.filter((v)-> return v.name == key)[0] 			
-				if(item != null && typeof item != 'undefined' && !$el.hasClass('props-unit__value'))
-					$el.text item["default-display"]
-		)
+		#$(selector).find('*[data-sarine-info]').each( (i,v) =>
+		#	$el = $(v)
+		#	$el.text findAttribute(stoneViews, $el.data('sarineInfo'))
+		#)
+		#$(selector).find('*[data-sarine-info-display]').each( (i,v) =>
+		#	$el = $(v)
+		#	key = findAttribute(stoneViews, $el.data('sarineInfoDisplay'))
+		#	mapObj = findAttribute(gradeScales, $el.data('sarineInfoDisplay').replace('stoneProperties.',''))
+		#	if(mapObj && key)
+		#		item = mapObj.filter((v)-> return v.name == key)[0] 			
+		#		if(item != null && typeof item != 'undefined' && !$el.hasClass('props-unit__value'))
+		#			$el.text item["default-display"]
+		#)
 		$(selector).find('*[data-sarine-report]').each( (i,v) =>
 			$el = $(v)
 			attr = $el.data('sarineReport')
