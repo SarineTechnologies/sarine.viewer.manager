@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.21.0 -  Sunday, August 13th, 2017, 6:00:46 PM 
+sarine.viewer.manager - v0.21.0 -  Tuesday, August 29th, 2017, 12:34:27 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -152,14 +152,14 @@ sarine.viewer.manager - v0.21.0 -  Sunday, August 13th, 2017, 6:00:46 PM
           return arrDefer.push(addViewer(type, toElement));
         };
       })(this));
-      $(selector).find('*[data-sarine-info]').each((function(_this) {
+      $(selector).find('*:not(.summary__spec__value,.props-unit__value)[data-sarine-info]').each((function(_this) {
         return function(i, v) {
           var $el;
           $el = $(v);
           return $el.text(findAttribute(stoneViews, $el.data('sarineInfo')));
         };
       })(this));
-      $(selector).find('*[data-sarine-info-display]').each((function(_this) {
+      $(selector).find('*:not(.summary__spec__value,.summary__spec__title,.props-unit__value)[data-sarine-info-display]').each((function(_this) {
         return function(i, v) {
           var $el, item, key, mapObj;
           $el = $(v);

@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.21.0 -  Sunday, August 13th, 2017, 6:00:46 PM 
+sarine.viewer.manager - v0.21.0 -  Tuesday, August 29th, 2017, 12:34:27 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 
 ###
@@ -101,11 +101,11 @@ class ViewerManger
 			$(v).replaceWith(toElement)
 			arrDefer.push addViewer(type,toElement)
 		)
-		$(selector).find('*[data-sarine-info]').each( (i,v) =>
+		$(selector).find('*:not(.summary__spec__value,.props-unit__value)[data-sarine-info]').each( (i,v) =>
 			$el = $(v)
 			$el.text findAttribute(stoneViews, $el.data('sarineInfo'))
 		)
-		$(selector).find('*[data-sarine-info-display]').each( (i,v) =>
+		$(selector).find('*:not(.summary__spec__value,.summary__spec__title,.props-unit__value)[data-sarine-info-display]').each( (i,v) =>
 			$el = $(v)
 			key = findAttribute(stoneViews, $el.data('sarineInfoDisplay'))
 			mapObj = findAttribute(gradeScales, $el.data('sarineInfoDisplay').replace('stoneProperties.',''))
