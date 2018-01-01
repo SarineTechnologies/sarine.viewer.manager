@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.21.0 -  Tuesday, August 29th, 2017, 12:34:27 PM 
+sarine.viewer.manager - v0.21.0 -  Monday, January 1st, 2018, 10:23:58 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 
 ###
@@ -194,6 +194,7 @@ class ViewerManger
 		defer = $.Deferred()
 		data = undefined
 		callbackPic = undefined
+		
 		$.ajaxSetup(
 			async : false
 		);
@@ -220,7 +221,16 @@ class ViewerManger
 			data.instance = "SarineImage"
 			data.name = "sarine.viewer.image"
 			data.args = {"imagesArr" : [path]}
-		url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (if location.hash.indexOf("debug") == 1 then ".bundle.js" else ".bundle.min.js") + window.cacheVersion
+		
+		# Get from the atoms config object the version of the current atom.
+		# if the object or the atom inside the object  doesnt exist, use default vesion.
+		atomVersion = window.cacheVersion
+		if (atomsConfiguration?)
+			currentConfig = atomsConfiguration[data.name]
+			if (typeof(currentConfig) != "undefined" )
+				atomVersion = "?" + currentConfig.version
+
+		url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (if location.hash.indexOf("debug") == 1 then ".bundle.js" else ".bundle.min.js") + atomVersion
 
 		s = $("<script>",{type:"text/javascript"}).appendTo("body").end()[0]
 		s.onload = ()->

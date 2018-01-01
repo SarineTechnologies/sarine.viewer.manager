@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.21.0 -  Tuesday, August 29th, 2017, 12:34:27 PM 
+sarine.viewer.manager - v0.21.0 -  Monday, January 1st, 2018, 10:23:58 AM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -276,7 +276,7 @@ sarine.viewer.manager - v0.21.0 -  Tuesday, August 29th, 2017, 12:34:27 PM
     };
 
     addViewer = function(type, toElement) {
-      var callbackPic, data, defer, path, s, src, url;
+      var atomVersion, callbackPic, currentConfig, data, defer, path, s, src, url;
       defer = $.Deferred();
       data = void 0;
       callbackPic = void 0;
@@ -307,7 +307,14 @@ sarine.viewer.manager - v0.21.0 -  Tuesday, August 29th, 2017, 12:34:27 PM
           "imagesArr": [path]
         };
       }
-      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js") + window.cacheVersion;
+      atomVersion = window.cacheVersion;
+      if ((typeof atomsConfiguration !== "undefined" && atomsConfiguration !== null)) {
+        currentConfig = atomsConfiguration[data.name];
+        if (typeof currentConfig !== "undefined") {
+          atomVersion = "?" + currentConfig.version;
+        }
+      }
+      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js") + atomVersion;
       s = $("<script>", {
         type: "text/javascript"
       }).appendTo("body").end()[0];
