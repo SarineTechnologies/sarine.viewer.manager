@@ -1,5 +1,5 @@
 ###!
-sarine.viewer.manager - v0.21.0 -  Monday, January 1st, 2018, 10:23:58 AM 
+sarine.viewer.manager - v0.21.0 -  Monday, January 8th, 2018, 4:03:23 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
 
 ###
@@ -202,15 +202,15 @@ class ViewerManger
 		#if configuration.experiences && typeof configuration.experiences != 'undefined' && !existInConfig(type)
 		#	return
 
-		if (jsonsAllObj == undefined)
-			$.getJSON jsonsAll + window.cacheVersion ,(d)=>
-				jsonsAllObj = d
-				data = d[toElement.data("version") || "v1"][type]
+		if (atomsConfiguration?)
+			data = atomsConfiguration[toElement.data("version") || "v1"][type]
+		else #fallback !!! if atoms configuration does not exist - take from s3
+			$.getJSON jsonsAll + window.cacheVersion ,(jsondata)=>
+				atomsConfiguration = jsondata
+				data = jsondata[toElement.data("version") || "v1"][type]
 			$.ajaxSetup(
 				async : true
 			);
-		else
-			data = jsonsAllObj[toElement.data("version") || "v1"][type]
 
 		callbackPic = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png")
 		if stoneViews.viewers[type] == null
@@ -222,12 +222,7 @@ class ViewerManger
 			data.args = {"imagesArr" : [path]}
 		
 		# Get from the atoms config object the version of the current atom.
-		# if the object or the atom inside the object doesnt exist, use default version.
-		atomVersion = window.cacheVersion
-		if (atomsConfiguration?)
-			currentConfig = atomsConfiguration[data.name]
-			if (typeof(currentConfig) != "undefined" )
-				atomVersion = "?" + currentConfig.version
+		atomVersion = "?" + data["version"]
 
 		url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (if location.hash.indexOf("debug") == 1 then ".bundle.js" else ".bundle.min.js") + atomVersion
 
