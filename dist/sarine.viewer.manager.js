@@ -114,7 +114,7 @@ sarine.viewer.manager - v0.21.0 -  Monday, January 8th, 2018, 4:03:23 PM
       document.viewersList = JSON.parse(JSON.stringify(allViewresList));
       $(selector).find(fromTag).each((function(_this) {
         return function(i, v) {
-          var active, attr, coordinates, menu, order, toElement, type, _i, _len, _ref;
+          var active, attr, coordinates, menu, order, popup, toElement, type, _i, _len, _ref;
           toElement = $("<" + toTag + ">");
           type = $(v).attr("viewer");
           order = $(v).attr('order') || 99;
@@ -145,6 +145,15 @@ sarine.viewer.manager - v0.21.0 -  Monday, January 8th, 2018, 4:03:23 PM
               "menu": menu,
               "coordinates": coordinates,
               "active": active
+            });
+          }
+          if (type === "externalPdf") {
+            popup = $(v).attr('mode') || "target";
+            toElement.data({
+              "mode": popup
+            });
+            toElement.attr({
+              "mode": popup
             });
           }
           toElement.addClass("viewer " + type);

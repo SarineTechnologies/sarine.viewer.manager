@@ -95,6 +95,11 @@ class ViewerManger
 				toElement.data({"menu" : menu, "coordinates" : coordinates, "active" : active})
 				toElement.attr({"menu" : menu, "coordinates" : coordinates, "active" : active})
 
+			if(type == "externalPdf")	
+				popup = $(v).attr('mode') || "target"
+				toElement.data({"mode" : popup})
+				toElement.attr({"mode" : popup})
+
 			toElement.addClass("viewer " + type)
 
 			$(v).replaceWith(toElement)
