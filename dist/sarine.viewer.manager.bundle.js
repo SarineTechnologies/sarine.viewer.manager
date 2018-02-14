@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.21.0 -  Thursday, January 4th, 2018, 2:13:18 PM 
+sarine.viewer.manager - v0.21.0 -  Monday, January 8th, 2018, 4:03:23 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -285,25 +285,26 @@ sarine.viewer.manager - v0.21.0 -  Thursday, January 4th, 2018, 2:13:18 PM
     };
 
     addViewer = function(type, toElement) {
-      var callbackPic, data, defer, path, s, src, url;
+      var atomVersion, callbackPic, data, defer, path, s, src, url;
       defer = $.Deferred();
       data = void 0;
       callbackPic = void 0;
       $.ajaxSetup({
         async: false
       });
-      if (jsonsAllObj === void 0) {
+      if ((typeof atomsConfiguration !== "undefined" && atomsConfiguration !== null)) {
+        data = atomsConfiguration[toElement.data("version") || "v1"][type];
+      } else {
         $.getJSON(jsonsAll + window.cacheVersion, (function(_this) {
-          return function(d) {
-            jsonsAllObj = d;
-            return data = d[toElement.data("version") || "v1"][type];
+          return function(jsondata) {
+            var atomsConfiguration;
+            atomsConfiguration = jsondata;
+            return data = jsondata[toElement.data("version") || "v1"][type];
           };
         })(this));
         $.ajaxSetup({
           async: true
         });
-      } else {
-        data = jsonsAllObj[toElement.data("version") || "v1"][type];
       }
       callbackPic = data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png";
       if (stoneViews.viewers[type] === null) {
@@ -316,7 +317,8 @@ sarine.viewer.manager - v0.21.0 -  Thursday, January 4th, 2018, 2:13:18 PM
           "imagesArr": [path]
         };
       }
-      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js") + window.cacheVersion;
+      atomVersion = "?" + data["version"];
+      url = logicRoot.replace("{version}", toElement.data("version") || "v1") + data.name + (location.hash.indexOf("debug") === 1 ? ".bundle.js" : ".bundle.min.js") + atomVersion;
       s = $("<script>", {
         type: "text/javascript"
       }).appendTo("body").end()[0];
