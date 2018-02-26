@@ -30,10 +30,7 @@
     "grunt-version": "^0.3.1",
     "grunt-wiredep": "^2.0.0",
     "install": "^0.1.8",
-    "load-grunt-tasks": "^3.1.0"
-  },
-  "version": "0.23.0",
-  "dependencies": {
     "load-grunt-tasks": "^3.5.2"
-  }
+  },
+  "version": "0.23.0"
 }

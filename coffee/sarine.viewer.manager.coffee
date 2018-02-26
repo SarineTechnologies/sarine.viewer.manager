@@ -56,9 +56,6 @@ class ViewerManger
 
 	constructor: (option) ->
 		{fromTag, toTag, stoneViews,template,jsons,logicRoot, templateContainers} = option
-		window.cacheVersion = "?" +  "__VERSION__"
-		if configuration.cacheVersion
-			window.cacheVersion += configuration.cacheVersion
 		initLocalStorage('stones')
 		initLocalStorage('templates')
 		initTemplatesMapper()
@@ -209,13 +206,6 @@ class ViewerManger
 
 		if (atomsConfiguration?)
 			data = atomsConfiguration[toElement.data("version") || "v1"][type]
-		else #fallback !!! if atoms configuration does not exist - take from s3
-			$.getJSON jsonsAll + window.cacheVersion ,(jsondata)=>
-				atomsConfiguration = jsondata
-				data = jsondata[toElement.data("version") || "v1"][type]
-			$.ajaxSetup(
-				async : true
-			);
 
 		callbackPic = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png")
 		if stoneViews.viewers[type] == null

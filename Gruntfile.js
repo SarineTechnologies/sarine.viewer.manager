@@ -1,106 +1,88 @@
 'use strict';
 module.exports = function(grunt) {
-    var path = require("path");
-    var dirname = __dirname.split(path.sep)
-    dirname.pop();
-    dirname = dirname.pop();
-    var branch = "dev"
     require('load-grunt-tasks')(grunt)
-    var files = ["Gruntfile.js", "copyright.txt", "GruntfileBundle.js", "package.json", "dist/*.js", "dist/*.map",  "coffee/*.coffee", "bower.json", "release.cmd", "commit.cmd", "bundle.cmd"]
-    var message = "commit"
+    var target = grunt.option('target') || "";
+
     grunt.initConfig({
-        config: grunt.file.readJSON("bower.json"),
-        version: {
-            project: {
-                src: ['bower.json', 'package.json']
-            }
+        config: grunt.file.readJSON(target + "package.json"),
+        clean: {
+            build: [target + "lib/", target + "dist/", target + "build/"],
+            bundlecoffee: [target + "coffee/*.bundle.coffee"],
+            postbuild: [target + "build/"]
         },
-        gitcheckout: {
-            task: {
-                options: {
-                    branch: "<%= branch %>",
-                    overwrite: true
-                }
-            }
-        },
-        gitcommit: {
-            all: {
-                options: {
-                    message: "<%= config.message %>",
-                    force: true
-                },
-                files: {
-                    src: files
-                }
+        commentsCoffee: {
+            coffee: {
+                src: [target + 'coffee/<%= config.name %>.coffee'],
+                dest: target + 'coffee/<%= config.name %>.coffee',
             },
-            bower: {
-                options: {
-                    message: "release : <%= config.version %>",
-                    force: true
-                },
-                files: {
-                    src: ["bower.json", "package.json"]
-                }
+            coffeeBundle: {
+                src: [target + 'coffee/<%= config.name %>.bundle.coffee'],
+                dest: target + 'coffee/<%= config.name %>.bundle.coffee',
+            },
+        },
+        concat: {
+            coffee: {
+                src: [target + 'coffee/<%= config.name %>.coffee'],
+                dest: target + 'coffee/<%= config.name %>.coffee',
+            },
+            coffeebundle: {
+                src: [target + 'coffee/<%= config.name %>.bundle.coffee'],
+                dest: target + 'coffee/<%= config.name %>.bundle.coffee',
             }
         },
-        gitpush: {
-            all: {
-                options: {
-                    branch: "<%= branch %>",
-                    force: true
-                },
-                files: {
-                    src: files
-                }
-            }
-        },
-        gitadd: {
-            firstTimer: {
-                option: {
-                    force: true
-                },
-                files: {
-                    src: files
-                }
-            }
-        },
-        gitpull: {
+        uglify: {
+            options: {
+                preserveComments: 'some',
+                banner: '###!\n<%= config.name %> - v<%= config.version %> - ' +
+                        ' <%= grunt.template.today("dddd, mmmm dS, yyyy, h:MM:ss TT") %> ' + '\n ' + grunt.file.read("copyright.txt") + '\n###'
+            },
             build: {
-                options: {
-                    force: true
-                },
-                files: {
-                    src: files
-                }
+                src: target + 'dist/<%= config.name %>.js',
+                dest: target + 'dist/<%= config.name %>.min.js'
+            },
+            bundle: {
+                src: target + 'dist/<%= config.name %>.bundle.js',
+                dest: target + 'dist/<%= config.name %>.bundle.min.js'
             }
         },
-        prompt: {
-            all: {
-                options: {
-                    questions: [{
-                        config: 'config.customBranch',
-                        type: 'confirm',
-                        message: 'create new branch base on the folder name - ' + dirname
-                    }, {
-                        config: 'config.message',
-                        type: 'input',
-                        message: 'comment:\n',
-                        default: 'commit'
-                    }],
-                    then: function(results, done) {
-                        grunt.log.writeln(results["config.customBranch"])
-                        grunt.config.set('branch', 'dev')
-                        if (results["config.customBranch"]) {
-                            grunt.config.set('branch', dirname);
-                            grunt.task.run('gitcheckout:task');
-                        }
-                        done();
-                        return true;
-                    }
-                }
+        coffeescript_concat: {
+            bundle: {
+                src: [target + 'lib/add/*.coffee', target + 'coffee/*.coffee', target + '!coffee/*.bundle.coffee'],
+                dest: target + 'coffee/<%= config.name %>.bundle.coffee'
+
+            }
+        },
+        coffee: {
+            build: {
+                option: {
+                    join: true,
+                    extDot: 'last'
+                },
+                dest: target + 'dist/<%= config.name %>.js',
+                src: [target + 'coffee/<%= config.name %>.coffee']
+
+            },
+            bundle: {
+                option: {
+                    join: true,
+                    extDot: 'last'
+                },
+                dest: target + 'dist/<%= config.name %>.bundle.js',
+                src: [target + 'coffee/<%= config.name %>.bundle.coffee']
+
             }
         }
     })
-    grunt.registerTask('commit', ['prompt', 'gitadd', 'gitcommit:all', 'gitpush']);
-    grunt.registerTask('release-git', ['release:' + grunt.file.readJSON("bower.json")["version"]]);
+    grunt.registerTask('build', [
+        'clean:build',
+        'clean:bundlecoffee',
+        'coffeescript_concat',
+        'concat:coffeebundle',
+        'coffee:bundle',
+        'concat:coffee',
+        'coffee:build',
+        'uglify',
+        'clean:postbuild'
+    ]);
+
 };
