@@ -93,6 +93,15 @@ module.exports = function(grunt) {
             }
         },
         coffee: {
+               build: {
+                       option: {
+                           join: true,
+                           extDot: 'last'
+                       },
+                       dest: target + 'dist/<%= config.name %>.js',
+                       src: [target + 'coffee/<%= config.name %>.coffee']
+        
+                   },
             bundle: {
                 option: {
                     join: true,
@@ -115,6 +124,7 @@ module.exports = function(grunt) {
         'coffee:bundle',
         'commentsCoffee:coffee',
         'concat:coffee',
+        'coffee:build',
         'changeVersion:files',
         'uglify',
         'clean:postbuild'
