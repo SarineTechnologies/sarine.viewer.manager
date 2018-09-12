@@ -217,7 +217,7 @@ class ViewerManger
 			);
 
 		callbackPic = (data.callbackPic || jsons.replace("{version}", toElement.data("version") || "v1") + "no_stone.png")
-		if stoneViews.viewers[type] == null
+		if stoneViews.viewers[type] == null && type != "externalPdf"
 			src = callbackPic.split("/")
 			path = src.pop();
 			stoneViews.viewers[type] =src.join("/") + "/"
