@@ -274,6 +274,7 @@ class ViewerManger
 			$.when.apply($,arr[count]).then(()->
 				if arr.length - 1 == count
 					$(document).trigger("all_" + _method + "_ended")
+					debugger;
 					defer.resolve();
 				else
 					count++
