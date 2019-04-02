@@ -268,13 +268,18 @@ class ViewerManger
 			pmId = current[v].id + "_" + current[v].element.data('type')
 			$(document).trigger(_method + "_start",[{Id : pmId}])
 			arr.push current[v][_method]().then do(pmId) -> -> $(document).trigger(_method + "_end",[{Id : pmId}])
-		$.when.apply($,arr).then(()->
-			if _list.length == 0
-				$(document).trigger("all_" + _method + "_ended")
-				defer.resolve();
-			else
-				_t.init_list(_list,_method,defer)
-		)
+		
+		var count = 0;
+		while (count != arr.length - 1)
+			$.when.apply($,arr[count]).then(()->
+				if arr.length - 1 == count
+					$(document).trigger("all_" + _method + "_ended")
+					defer.resolve();
+				else
+					count++
+					defer.resolve();
+			)
+
 		defer
 
 	first_init : ()->
