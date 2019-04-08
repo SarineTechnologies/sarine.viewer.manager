@@ -1,6 +1,6 @@
 
 /*!
-sarine.viewer.manager - v0.21.0 -  Tuesday, November 20th, 2018, 1:49:53 PM 
+sarine.viewer.manager - v0.21.0 -  Monday, April 8th, 2019, 2:50:23 PM 
  The source code, name, and look and feel of the software are Copyright © 2015 Sarine Technologies Ltd. All Rights Reserved. You may not duplicate, copy, reuse, sell or otherwise exploit any portion of the code, content or visual design elements without express written permission from Sarine Technologies Ltd. The terms and conditions of the sarine.com website (http://sarine.com/terms-and-conditions/) apply to the access and use of this software.
  */
 
@@ -114,10 +114,13 @@ sarine.viewer.manager - v0.21.0 -  Tuesday, November 20th, 2018, 1:49:53 PM
       document.viewersList = JSON.parse(JSON.stringify(allViewresList));
       $(selector).find(fromTag).each((function(_this) {
         return function(i, v) {
-          var active, attr, coordinates, order, popup, toElement, type, _i, _len, _ref;
+          var active, attr, coordinates, exp, order, popup, toElement, type, _i, _len, _ref;
           toElement = $("<" + toTag + ">");
           type = $(v).attr("viewer");
-          order = $(v).attr('order') || 99;
+          exp = configuration.experiences.find(function(i) {
+            return i.atom === type;
+          });
+          order = exp ? exp.order : 99;
           _ref = v.attributes;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             attr = _ref[_i];
